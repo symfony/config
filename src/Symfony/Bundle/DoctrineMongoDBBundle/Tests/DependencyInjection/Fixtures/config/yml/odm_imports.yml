@@ -1,5 +1,0 @@
-imports:
-  - { resource: odm_imports_import.yml }
-
-doctrine_odm.mongodb:
-  auto_generate_proxy_classes: true
