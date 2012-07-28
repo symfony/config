@@ -34,11 +34,17 @@ class ScalarNode extends VariableNode
     protected function validateType($value)
     {
         if (!is_scalar($value) && null !== $value) {
-            $ex = new InvalidTypeException(sprintf(
+            $errorMessage = $this->getErrorMessage();
+            $finalMessage = sprintf(
                 'Invalid type for path "%s". Expected scalar, but got %s.',
                 $this->getPath(),
                 gettype($value)
-            ));
+            );
+            if ($errorMessage != null) {
+                $finalMessage .= sprintf("\nError message: %s.", $errorMessage);
+            }
+
+            $ex = new InvalidTypeException($finalMessage);
             $ex->setPath($this->getPath());
 
             throw $ex;
