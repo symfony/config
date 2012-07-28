@@ -124,4 +124,21 @@ class TreeBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($tree->getExample()));
         $this->assertEquals('example', $children['child']->getExample());
     }
+
+    public function testDefinitionErrorMessageGetsTransferedToNode()
+    {
+        $builder = new TreeBuilder();
+
+        $builder->root('test')->errorMessage('You are missing the root node')
+            ->children()
+            ->node('child', 'variable')->errorMessage('child error message')->defaultValue('default')
+            ->end()
+            ->end();
+
+        $tree = $builder->buildTree();
+        $children = $tree->getChildren();
+
+        $this->assertEquals('You are missing the root node', $tree->getErrorMessage());
+        $this->assertEquals('child error message', $children['child']->getErrorMessage());
+    }
 }

@@ -105,6 +105,26 @@ abstract class BaseNode implements NodeInterface
     }
 
     /**
+     * Sets an error message.
+     *
+     * @param string $errorMessage
+     */
+    public function setErrorMessage($errorMessage)
+    {
+        $this->setAttribute('errorMessage', $errorMessage);
+    }
+
+    /**
+     * Returns error message.
+     *
+     * @return string The error message
+     */
+    public function getErrorMessage()
+    {
+        return $this->getAttribute('errorMessage');
+    }
+
+    /**
      * Sets the example configuration for this node.
      *
      * @param string|array $example

@@ -77,6 +77,17 @@ abstract class NodeDefinition implements NodeParentInterface
     }
 
     /**
+     * Sets error message.
+     *
+     * @param string $errorMessage The error message text
+     * @return NodeDefinition
+     */
+    public function errorMessage($errorMessage)
+    {
+        return $this->attribute('errorMessage', $errorMessage);
+    }
+
+    /**
      * Sets example configuration.
      *
      * @param string|array $example
