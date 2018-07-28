@@ -499,7 +499,7 @@ abstract class BaseNode implements NodeInterface
                 return self::$placeholders[$value];
             }
 
-            if (0 === strpos($value, self::$placeholderUniquePrefix)) {
+            if (self::$placeholderUniquePrefix === null || 0 === strpos($value, self::$placeholderUniquePrefix)) {
                 return array();
             }
         }
