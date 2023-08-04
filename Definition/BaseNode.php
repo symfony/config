@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Config\Definition;
 
+use Symfony\Component\Config\Definition\Builder\ExprBuilder;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Config\Definition\Exception\ForbiddenOverwriteException;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
@@ -215,7 +216,7 @@ abstract class BaseNode implements NodeInterface
     /**
      * Sets the list of types supported by normalization.
      *
-     * see ExprBuilder::TYPE_* constants.
+     * @param list<ExprBuilder::TYPE_*> $types
      */
     public function setNormalizedTypes(array $types): void
     {
@@ -225,7 +226,7 @@ abstract class BaseNode implements NodeInterface
     /**
      * Gets the list of types supported by normalization.
      *
-     * see ExprBuilder::TYPE_* constants.
+     * @return list<ExprBuilder::TYPE_*>
      */
     public function getNormalizedTypes(): array
     {

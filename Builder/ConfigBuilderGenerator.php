@@ -388,14 +388,19 @@ public function NAME($value): static
     {
         $paramTypes = [];
         if ($node instanceof BaseNode) {
-            $types = $node->getNormalizedTypes();
-            if (\in_array(ExprBuilder::TYPE_ANY, $types, true)) {
-                $paramTypes[] = 'mixed';
-            }
-            if (\in_array(ExprBuilder::TYPE_STRING, $types, true)) {
-                $paramTypes[] = 'string';
+            foreach ($node->getNormalizedTypes() as $type) {
+                $paramTypes[] = match ($type) {
+                    ExprBuilder::TYPE_ANY => 'mixed',
+                    ExprBuilder::TYPE_STRING => 'string',
+                    ExprBuilder::TYPE_NULL => 'null',
+                    ExprBuilder::TYPE_ARRAY => 'array',
+                    ExprBuilder::TYPE_BOOL => 'bool',
+                    ExprBuilder::TYPE_BACKED_ENUM => '\BackedEnum',
+                    ExprBuilder::TYPE_INT => 'int',
+                };
             }
         }
+
         if ($node instanceof BooleanNode) {
             $paramTypes[] = 'bool';
         } elseif ($node instanceof IntegerNode) {
@@ -408,6 +413,10 @@ public function NAME($value): static
             $paramTypes[] = 'array';
         } elseif ($node instanceof VariableNode) {
             $paramTypes[] = 'mixed';
+        }
+
+        if (\in_array('mixed', $paramTypes, true)) {
+            return ['mixed'];
         }
 
         return array_unique($paramTypes);

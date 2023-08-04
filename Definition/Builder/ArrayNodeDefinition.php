@@ -51,6 +51,11 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
     protected bool $normalizeKeys = true;
 
     /**
+     * @var list<ExprBuilder::TYPE_*>|null
+     */
+    protected ?array $allowedTypes = null;
+
+    /**
      * @param TParent $parent
      */
     public function __construct(?string $name, ?NodeParentInterface $parent = null)
@@ -77,6 +82,31 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
     public function setBuilder(NodeBuilder $builder): void
     {
         $this->nodeBuilder = $builder;
+    }
+
+    /**
+     * Allows alternative types and wraps them into arrays.
+     *
+     * @param list<ExprBuilder::TYPE_INT|ExprBuilder::TYPE_STRING|ExprBuilder::TYPE_BOOL|ExprBuilder::TYPE_NULL|ExprBuilder::TYPE_BACKED_ENUM> $allowedTypes
+     * @param string|null                                                                                                                      $key          The key to wrap the value in
+     *
+     * @return $this
+     */
+    public function acceptAndWrap(array $allowedTypes, ?string $key = null): static
+    {
+        $this->allowedTypes = $allowedTypes;
+
+        foreach ($allowedTypes as $type) {
+            $this->beforeNormalization()->ifTrue(match ($type) {
+                ExprBuilder::TYPE_INT => is_int(...),
+                ExprBuilder::TYPE_STRING => is_string(...),
+                ExprBuilder::TYPE_BOOL => is_bool(...),
+                ExprBuilder::TYPE_NULL => is_null(...),
+                ExprBuilder::TYPE_BACKED_ENUM => static fn ($v) => $v instanceof \BackedEnum,
+            })->then(static fn ($v) => [$key ?? 0 => $v]);
+        }
+
+        return $this;
     }
 
     /**
@@ -498,7 +528,7 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
 
         if (isset($this->normalization)) {
             $node->setNormalizationClosures($this->normalization->before);
-            $node->setNormalizedTypes($this->normalization->declaredTypes);
+            $node->setNormalizedTypes($this->allowedTypes ?? $this->normalization->declaredTypes);
             $node->setXmlRemappings($this->normalization->remappings);
         }
 
