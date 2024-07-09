@@ -6,6 +6,7 @@ CHANGELOG
 
  * Add `ExprBuilder::ifFalse()`
  * Add support for info on `ArrayNodeDefinition::canBeEnabled()` and `ArrayNodeDefinition::canBeDisabled()`
+ * Allow using an enum FQCN with `EnumNode`
 
 7.2
 ---
