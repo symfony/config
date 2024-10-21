@@ -65,7 +65,7 @@ public function NAME(): string
     return \'ALIAS\';
 }', ['ALIAS' => $rootNode->getPath()]);
 
-            $this->writeClasses();
+            $this->writeClasses($rootNode);
         }
 
         return function () use ($path, $rootClass) {
@@ -86,10 +86,10 @@ public function NAME(): string
         return $directory.\DIRECTORY_SEPARATOR.$class->getFilename();
     }
 
-    private function writeClasses(): void
+    private function writeClasses(NodeInterface $node): void
     {
         foreach ($this->classes as $class) {
-            $this->buildConstructor($class);
+            $this->buildConstructor($class, $node);
             $this->buildToArray($class);
             if ($class->getProperties()) {
                 $class->addProperty('_usedProperties', null, '[]');
@@ -114,7 +114,7 @@ public function NAME(): string
                 $child instanceof PrototypedArrayNode => $this->handlePrototypedArrayNode($child, $class, $namespace),
                 $child instanceof VariableNode => $this->handleVariableNode($child, $class),
                 $child instanceof ArrayNode => $this->handleArrayNode($child, $class, $namespace),
-                default => throw new \RuntimeException(\sprintf('Unknown node "%s".', $child::class)),
+                default => throw new \RuntimeException(\sprintf('Unknown node "%s".', get_debug_type($child))),
             };
         }
     }
@@ -503,8 +503,8 @@ public function NAME($value): static
 
             $body .= strtr('
     if (isset($this->_usedProperties[\'PROPERTY\'])) {
-        $output[\'ORG_NAME\'] = '.$code.';
-    }', ['PROPERTY' => $p->getName(), 'ORG_NAME' => $p->getOriginalName(), 'CLASS' => $p->getType()]);
+        $output[\'ORIG_NAME\'] = '.$code.';
+    }', ['PROPERTY' => $p->getName(), 'ORIG_NAME' => $p->getOriginalName(), 'CLASS' => $p->getType()]);
         }
 
         $extraKeys = $class->shouldAllowExtraKeys() ? ' + $this->_extraKeys' : '';
@@ -518,51 +518,54 @@ public function NAME(): array
 }');
     }
 
-    private function buildConstructor(ClassBuilder $class): void
+    private function buildConstructor(ClassBuilder $class, NodeInterface $node): void
     {
         $body = '';
         foreach ($class->getProperties() as $p) {
-            $code = '$value[\'ORG_NAME\']';
+            $code = '$config[\'ORIG_NAME\']';
             if (null !== $p->getType()) {
                 if ($p->isArray()) {
                     $code = $p->areScalarsAllowed()
-                        ? 'array_map(fn ($v) => \is_array($v) ? new '.$p->getType().'($v) : $v, $value[\'ORG_NAME\'])'
-                        : 'array_map(fn ($v) => new '.$p->getType().'($v), $value[\'ORG_NAME\'])'
+                        ? 'array_map(fn ($v) => \is_array($v) ? new '.$p->getType().'($v) : $v, $config[\'ORIG_NAME\'])'
+                        : 'array_map(fn ($v) => new '.$p->getType().'($v), $config[\'ORIG_NAME\'])'
                     ;
                 } else {
                     $code = $p->areScalarsAllowed()
-                        ? '\is_array($value[\'ORG_NAME\']) ? new '.$p->getType().'($value[\'ORG_NAME\']) : $value[\'ORG_NAME\']'
-                        : 'new '.$p->getType().'($value[\'ORG_NAME\'])'
+                        ? '\is_array($config[\'ORIG_NAME\']) ? new '.$p->getType().'($config[\'ORIG_NAME\']) : $config[\'ORIG_NAME\']'
+                        : 'new '.$p->getType().'($config[\'ORIG_NAME\'])'
                     ;
                 }
             }
 
             $body .= strtr('
-    if (array_key_exists(\'ORG_NAME\', $value)) {
+    if (array_key_exists(\'ORIG_NAME\', $config)) {
         $this->_usedProperties[\'PROPERTY\'] = true;
         $this->PROPERTY = '.$code.';
-        unset($value[\'ORG_NAME\']);
+        unset($config[\'ORIG_NAME\']);
     }
-', ['PROPERTY' => $p->getName(), 'ORG_NAME' => $p->getOriginalName()]);
+', ['PROPERTY' => $p->getName(), 'ORIG_NAME' => $p->getOriginalName()]);
         }
 
         if ($class->shouldAllowExtraKeys()) {
             $body .= '
-    $this->_extraKeys = $value;
+    $this->_extraKeys = $config;
 ';
         } else {
             $body .= '
-    if ([] !== $value) {
-        throw new InvalidConfigurationException(sprintf(\'The following keys are not supported by "%s": \', __CLASS__).implode(\', \', array_keys($value)));
+    if ($config) {
+        throw new InvalidConfigurationException(sprintf(\'The following keys are not supported by "%s": \', __CLASS__).implode(\', \', array_keys($config)));
     }';
 
             $class->addUse(InvalidConfigurationException::class);
         }
 
         $class->addMethod('__construct', '
-public function __construct(array $value = [])
+/**
+ * @param PARAM_TYPE $config
+ */
+public function __construct(array $config = [])
 {'.$body.'
-}');
+}', ['PARAM_TYPE' => ArrayShapeGenerator::generate($node)]);
     }
 
     private function buildSetExtraKey(ClassBuilder $class): void

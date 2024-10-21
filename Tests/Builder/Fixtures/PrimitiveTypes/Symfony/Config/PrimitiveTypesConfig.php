@@ -129,58 +129,70 @@ class PrimitiveTypesConfig implements \Symfony\Component\Config\Builder\ConfigBu
         return 'primitive_types';
     }
 
-    public function __construct(array $value = [])
+    /**
+     * @param array{
+     *     boolean_node?: bool,
+     *     enum_node?: "foo"|"bar"|"baz"|Symfony\Component\Config\Tests\Fixtures\TestEnum::Bar,
+     *     fqcn_enum_node?: foo|bar,
+     *     fqcn_unit_enum_node?: Symfony\Component\Config\Tests\Fixtures\TestEnum::Foo|Symfony\Component\Config\Tests\Fixtures\TestEnum::Bar|Symfony\Component\Config\Tests\Fixtures\TestEnum::Ccc,
+     *     float_node?: float,
+     *     integer_node?: int<min, max>,
+     *     scalar_node?: scalar|null,
+     *     scalar_node_with_default?: scalar|null, // Default: true
+     * } $config
+     */
+    public function __construct(array $config = [])
     {
-        if (array_key_exists('boolean_node', $value)) {
+        if (array_key_exists('boolean_node', $config)) {
             $this->_usedProperties['booleanNode'] = true;
-            $this->booleanNode = $value['boolean_node'];
-            unset($value['boolean_node']);
+            $this->booleanNode = $config['boolean_node'];
+            unset($config['boolean_node']);
         }
 
-        if (array_key_exists('enum_node', $value)) {
+        if (array_key_exists('enum_node', $config)) {
             $this->_usedProperties['enumNode'] = true;
-            $this->enumNode = $value['enum_node'];
-            unset($value['enum_node']);
+            $this->enumNode = $config['enum_node'];
+            unset($config['enum_node']);
         }
 
-        if (array_key_exists('fqcn_enum_node', $value)) {
+        if (array_key_exists('fqcn_enum_node', $config)) {
             $this->_usedProperties['fqcnEnumNode'] = true;
-            $this->fqcnEnumNode = $value['fqcn_enum_node'];
-            unset($value['fqcn_enum_node']);
+            $this->fqcnEnumNode = $config['fqcn_enum_node'];
+            unset($config['fqcn_enum_node']);
         }
 
-        if (array_key_exists('fqcn_unit_enum_node', $value)) {
+        if (array_key_exists('fqcn_unit_enum_node', $config)) {
             $this->_usedProperties['fqcnUnitEnumNode'] = true;
-            $this->fqcnUnitEnumNode = $value['fqcn_unit_enum_node'];
-            unset($value['fqcn_unit_enum_node']);
+            $this->fqcnUnitEnumNode = $config['fqcn_unit_enum_node'];
+            unset($config['fqcn_unit_enum_node']);
         }
 
-        if (array_key_exists('float_node', $value)) {
+        if (array_key_exists('float_node', $config)) {
             $this->_usedProperties['floatNode'] = true;
-            $this->floatNode = $value['float_node'];
-            unset($value['float_node']);
+            $this->floatNode = $config['float_node'];
+            unset($config['float_node']);
         }
 
-        if (array_key_exists('integer_node', $value)) {
+        if (array_key_exists('integer_node', $config)) {
             $this->_usedProperties['integerNode'] = true;
-            $this->integerNode = $value['integer_node'];
-            unset($value['integer_node']);
+            $this->integerNode = $config['integer_node'];
+            unset($config['integer_node']);
         }
 
-        if (array_key_exists('scalar_node', $value)) {
+        if (array_key_exists('scalar_node', $config)) {
             $this->_usedProperties['scalarNode'] = true;
-            $this->scalarNode = $value['scalar_node'];
-            unset($value['scalar_node']);
+            $this->scalarNode = $config['scalar_node'];
+            unset($config['scalar_node']);
         }
 
-        if (array_key_exists('scalar_node_with_default', $value)) {
+        if (array_key_exists('scalar_node_with_default', $config)) {
             $this->_usedProperties['scalarNodeWithDefault'] = true;
-            $this->scalarNodeWithDefault = $value['scalar_node_with_default'];
-            unset($value['scalar_node_with_default']);
+            $this->scalarNodeWithDefault = $config['scalar_node_with_default'];
+            unset($config['scalar_node_with_default']);
         }
 
-        if ([] !== $value) {
-            throw new InvalidConfigurationException(sprintf('The following keys are not supported by "%s": ', __CLASS__).implode(', ', array_keys($value)));
+        if ($config) {
+            throw new InvalidConfigurationException(sprintf('The following keys are not supported by "%s": ', __CLASS__).implode(', ', array_keys($config)));
         }
     }
 

@@ -8,6 +8,7 @@ CHANGELOG
  * Add argument `$singular` to `NodeBuilder::arrayNode()` to decouple plurals/singulars from XML
  * Add support for `defaultNull()` on `ArrayNodeDefinition`
  * Add `ArrayNodeDefinition::acceptAndWrap()` to list alternative types that should be accepted and wrapped in an array
+ * Add array-shapes to generated config builders
 
 7.3
 ---
