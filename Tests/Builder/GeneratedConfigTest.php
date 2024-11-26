@@ -62,6 +62,7 @@ class GeneratedConfigTest extends TestCase
             'AddToList' => 'add_to_list',
             'NodeInitialValues' => 'node_initial_values',
             'ArrayExtraKeys' => 'array_extra_keys',
+            'ArrayValues' => 'array_values',
         ];
 
         foreach ($array as $name => $alias) {
