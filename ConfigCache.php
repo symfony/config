@@ -37,7 +37,7 @@ class ConfigCache extends ResourceCheckerConfigCache
         string $file,
         private bool $debug,
         ?string $metaFile = null,
-        array|null $skippedResourceTypes = null,
+        ?array $skippedResourceTypes = null,
     ) {
         $checkers = [];
         if ($this->debug) {
