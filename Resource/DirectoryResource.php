@@ -35,7 +35,7 @@ class DirectoryResource implements SelfCheckingResourceInterface
         $this->pattern = $pattern;
 
         if (false === $resolvedResource || !is_dir($resolvedResource)) {
-            throw new \InvalidArgumentException(sprintf('The directory "%s" does not exist.', $resource));
+            throw new \InvalidArgumentException(\sprintf('The directory "%s" does not exist.', $resource));
         }
 
         $this->resource = $resolvedResource;
