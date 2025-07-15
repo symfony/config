@@ -193,6 +193,8 @@ class GeneratedConfigTest extends TestCase
             }
             $currentFiles[substr($file->getPathname(), \strlen($current))] = $file->getPathname();
         }
+        ksort($expectedFiles);
+        ksort($currentFiles);
 
         $this->assertSame(array_keys($expectedFiles), array_keys($currentFiles));
         foreach ($expectedFiles as $fileName => $filePath) {
