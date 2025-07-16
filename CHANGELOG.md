@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+7.4
+---
+
+ * Add TagAwareAdapterInterface to NullAdapter
+
 7.3
 ---
 
