@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+8.0
+---
+
+ * Add argument `$info` to `ArrayNodeDefinition::canBeDisabled()` and `canBeEnabled()`
+
 7.4
 ---
 
