@@ -159,10 +159,12 @@ class GeneratedConfigTest extends TestCase
      */
     private function generateConfigBuilder(string $configurationClass, ?string &$outputDir = null)
     {
-        $outputDir = tempnam(sys_get_temp_dir(), 'sf_config_builder_');
-        unlink($outputDir);
-        mkdir($outputDir);
-        $this->tempDir[] = $outputDir;
+        if (null === $outputDir) {
+            $outputDir = tempnam(sys_get_temp_dir(), 'sf_config_builder_');
+            unlink($outputDir);
+            mkdir($outputDir);
+            $this->tempDir[] = $outputDir;
+        }
 
         $configuration = new $configurationClass();
         $rootNode = $configuration->getConfigTreeBuilder()->buildTree();
