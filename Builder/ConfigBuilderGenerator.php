@@ -285,17 +285,10 @@ public function NAME(string $VAR, TYPE $VALUE): static
         $paramType = $this->getParamType($noKey ? $nodeParameterTypes : $prototypeParameterTypes);
 
         $comment = $this->getComment($node);
-<<<<<<< HEAD
-        if ($hasNormalizationClosures) {
-            $comment = \sprintf(" * @template TValue\n * @param TValue \$value\n%s", $comment);
+        if ($hasNormalizationClosures && 'array' !== $paramType) {
+            $comment = \sprintf(" * @template TValue of %s\n * @param TValue \$value\n%s", $paramType, $comment);
             $comment .= \sprintf(' * @return %s|$this'."\n", $childClass->getFqcn());
             $comment .= \sprintf(' * @psalm-return (TValue is array ? %s : static)'."\n ", $childClass->getFqcn());
-=======
-        if ($hasNormalizationClosures && 'array' !== $paramType) {
-            $comment = sprintf(" * @template TValue of %s\n * @param TValue \$value\n%s", $paramType, $comment);
-            $comment .= sprintf(' * @return %s|$this'."\n", $childClass->getFqcn());
-            $comment .= sprintf(' * @psalm-return (TValue is array ? %s : static)'."\n ", $childClass->getFqcn());
->>>>>>> 100c683018d ([Config] Do not generate unreachable configuration paths)
         }
         if ('' !== $comment) {
             $comment = "/**\n$comment*/\n";
