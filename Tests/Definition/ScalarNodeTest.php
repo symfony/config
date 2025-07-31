@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Config\Tests\Definition;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\ArrayNode;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
@@ -19,9 +20,7 @@ use Symfony\Component\Config\Definition\ScalarNode;
 
 class ScalarNodeTest extends TestCase
 {
-    /**
-     * @dataProvider getValidValues
-     */
+    #[DataProvider('getValidValues')]
     public function testNormalize($value)
     {
         $node = new ScalarNode('test');
@@ -83,9 +82,7 @@ class ScalarNodeTest extends TestCase
         $this->assertSame(1, $deprecationTriggered, '->finalize() should trigger if the deprecated node is set');
     }
 
-    /**
-     * @dataProvider getInvalidValues
-     */
+    #[DataProvider('getInvalidValues')]
     public function testNormalizeThrowsExceptionOnInvalidValues($value)
     {
         $node = new ScalarNode('test');
@@ -125,9 +122,7 @@ class ScalarNodeTest extends TestCase
         $node->normalize([]);
     }
 
-    /**
-     * @dataProvider getValidNonEmptyValues
-     */
+    #[DataProvider('getValidNonEmptyValues')]
     public function testValidNonEmptyValues($value)
     {
         $node = new ScalarNode('test');
@@ -149,11 +144,7 @@ class ScalarNodeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getEmptyValues
-     *
-     * @param mixed $value
-     */
+    #[DataProvider('getEmptyValues')]
     public function testNotAllowedEmptyValuesThrowException($value)
     {
         $node = new ScalarNode('test');

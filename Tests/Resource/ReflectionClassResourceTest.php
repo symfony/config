@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Config\Tests\Resource;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Resource\ReflectionClassResource;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -60,9 +61,7 @@ class ReflectionClassResourceTest extends TestCase
         $this->assertFalse($res->isFresh($now), '->isFresh() returns false if the resource does not exist');
     }
 
-    /**
-     * @dataProvider provideHashedSignature
-     */
+    #[DataProvider('provideHashedSignature')]
     public function testHashedSignature(bool $changeExpected, int $changedLine, ?string $changedCode, int $resourceClassNameSuffix, ?\Closure $setContext = null)
     {
         if ($setContext) {

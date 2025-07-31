@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Config\Tests\Definition\Dumper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Dumper\YamlReferenceDumper;
 use Symfony\Component\Config\Tests\Fixtures\Configuration\ExampleConfiguration;
@@ -69,9 +70,7 @@ EOL
         ];
     }
 
-    /**
-     * @dataProvider provideDumpAtPath
-     */
+    #[DataProvider('provideDumpAtPath')]
     public function testDumpAtPath(string $path, string $expected)
     {
         $configuration = new ExampleConfiguration();
