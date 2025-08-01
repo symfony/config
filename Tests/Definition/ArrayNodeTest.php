@@ -270,7 +270,7 @@ class ArrayNodeTest extends TestCase
     }
 
     #[DataProvider('getDataWithIncludedExtraKeys')]
-    public function testMergeWithoutIgnoringExtraKeys(array $prenormalizeds)
+    public function testMergeWithoutIgnoringExtraKeys(array $prenormalizeds, array $merged)
     {
         $node = new ArrayNode('root');
         $node->addChild(new ScalarNode('foo'));
@@ -286,7 +286,7 @@ class ArrayNodeTest extends TestCase
     }
 
     #[DataProvider('getDataWithIncludedExtraKeys')]
-    public function testMergeWithIgnoringAndRemovingExtraKeys(array $prenormalizeds)
+    public function testMergeWithIgnoringAndRemovingExtraKeys(array $prenormalizeds, array $merged)
     {
         $node = new ArrayNode('root');
         $node->addChild(new ScalarNode('foo'));
