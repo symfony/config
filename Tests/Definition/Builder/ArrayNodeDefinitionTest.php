@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Config\Tests\Definition\Builder;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\BooleanNodeDefinition;
@@ -39,9 +40,7 @@ class ArrayNodeDefinitionTest extends TestCase
         $this->assertContains($child, $this->getField($parent, 'children'));
     }
 
-    /**
-     * @dataProvider providePrototypeNodeSpecificCalls
-     */
+    #[DataProvider('providePrototypeNodeSpecificCalls')]
     public function testPrototypeNodeSpecificOption(string $method, array $args)
     {
         $this->expectException(InvalidDefinitionException::class);
@@ -97,9 +96,7 @@ class ArrayNodeDefinitionTest extends TestCase
         $this->assertEquals([[]], $tree->getDefaultValue());
     }
 
-    /**
-     * @dataProvider providePrototypedArrayNodeDefaults
-     */
+    #[DataProvider('providePrototypedArrayNodeDefaults')]
     public function testPrototypedArrayNodeDefault(int|array|string|null $args, bool $shouldThrowWhenUsingAttrAsKey, bool $shouldThrowWhenNotUsingAttrAsKey, array $defaults)
     {
         $node = new ArrayNodeDefinition('root');
@@ -170,9 +167,7 @@ class ArrayNodeDefinitionTest extends TestCase
         $this->assertEquals(['enabled' => false, 'foo' => 'bar'], $node->getNode()->getDefaultValue());
     }
 
-    /**
-     * @dataProvider getEnableableNodeFixtures
-     */
+    #[DataProvider('getEnableableNodeFixtures')]
     public function testTrueEnableEnabledNode(array $expected, array $config, string $message)
     {
         $processor = new Processor();

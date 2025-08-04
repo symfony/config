@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Config\Tests\Definition;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\ArrayNode;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
@@ -75,9 +76,7 @@ class ArrayNodeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider ignoreAndRemoveMatrixProvider
-     */
+    #[DataProvider('ignoreAndRemoveMatrixProvider')]
     public function testIgnoreAndRemoveBehaviors(bool $ignore, bool $remove, array|\Exception $expected, string $message = '')
     {
         if ($expected instanceof \Exception) {
@@ -90,9 +89,7 @@ class ArrayNodeTest extends TestCase
         $this->assertSame($expected, $result, $message);
     }
 
-    /**
-     * @dataProvider getPreNormalizationTests
-     */
+    #[DataProvider('getPreNormalizationTests')]
     public function testPreNormalize(array $denormalized, array $normalized)
     {
         $node = new ArrayNode('foo');
@@ -124,9 +121,7 @@ class ArrayNodeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getZeroNamedNodeExamplesData
-     */
+    #[DataProvider('getZeroNamedNodeExamplesData')]
     public function testNodeNameCanBeZero(array $denormalized, array $normalized)
     {
         $zeroNode = new ArrayNode(0);
@@ -171,9 +166,7 @@ class ArrayNodeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getPreNormalizedNormalizedOrderedData
-     */
+    #[DataProvider('getPreNormalizedNormalizedOrderedData')]
     public function testChildrenOrderIsMaintainedOnNormalizeValue(array $prenormalized, array $normalized)
     {
         $scalar1 = new ScalarNode('1');
@@ -276,9 +269,7 @@ class ArrayNodeTest extends TestCase
         $this->assertTrue($deprecationTriggered, '->finalize() should trigger if the deprecated node is set');
     }
 
-    /**
-     * @dataProvider getDataWithIncludedExtraKeys
-     */
+    #[DataProvider('getDataWithIncludedExtraKeys')]
     public function testMergeWithoutIgnoringExtraKeys(array $prenormalizeds)
     {
         $node = new ArrayNode('root');
@@ -294,9 +285,7 @@ class ArrayNodeTest extends TestCase
         $r->invoke($node, ...$prenormalizeds);
     }
 
-    /**
-     * @dataProvider getDataWithIncludedExtraKeys
-     */
+    #[DataProvider('getDataWithIncludedExtraKeys')]
     public function testMergeWithIgnoringAndRemovingExtraKeys(array $prenormalizeds)
     {
         $node = new ArrayNode('root');
@@ -312,9 +301,7 @@ class ArrayNodeTest extends TestCase
         $r->invoke($node, ...$prenormalizeds);
     }
 
-    /**
-     * @dataProvider getDataWithIncludedExtraKeys
-     */
+    #[DataProvider('getDataWithIncludedExtraKeys')]
     public function testMergeWithIgnoringExtraKeys(array $prenormalizeds, array $merged)
     {
         $node = new ArrayNode('root');

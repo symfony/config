@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Config\Tests\Util;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Util\Exception\InvalidXmlException;
 use Symfony\Component\Config\Util\XmlUtils;
@@ -115,9 +116,7 @@ class XmlUtilsTest extends TestCase
         libxml_use_internal_errors($internalErrors);
     }
 
-    /**
-     * @dataProvider getDataForConvertDomToArray
-     */
+    #[DataProvider('getDataForConvertDomToArray')]
     public function testConvertDomToArray($expected, string $xml, bool $root = false, bool $checkPrefix = true)
     {
         $dom = new \DOMDocument();
@@ -149,9 +148,7 @@ class XmlUtilsTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getDataForPhpize
-     */
+    #[DataProvider('getDataForPhpize')]
     public function testPhpize($expected, string $value)
     {
         $this->assertSame($expected, XmlUtils::phpize($value));
