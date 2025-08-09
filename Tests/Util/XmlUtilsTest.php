@@ -40,11 +40,11 @@ class XmlUtilsTest extends TestCase
             if ('\\' === \DIRECTORY_SEPARATOR) {
                 $this->markTestSkipped('chmod is not supported on Windows');
             }
-            chmod($fixtures.'not_readable.xml', 000);
+            chmod($fixtures.'not_readable.xml', 0o00);
             XmlUtils::loadFile($fixtures.'not_readable.xml');
             $this->fail();
         } catch (\InvalidArgumentException $e) {
-            chmod($fixtures.'not_readable.xml', 0644);
+            chmod($fixtures.'not_readable.xml', 0o644);
             $this->assertStringContainsString('is not readable', $e->getMessage());
         }
 
@@ -167,7 +167,7 @@ class XmlUtilsTest extends TestCase
             [0, '0'],
             [1, '1'],
             [-1, '-1'],
-            [0777, '0777'],
+            [0o777, '0777'],
             [-511, '-0777'],
             ['0877', '0877'],
             [255, '0xFF'],
