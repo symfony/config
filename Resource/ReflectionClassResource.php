@@ -59,9 +59,6 @@ class ReflectionClassResource implements SelfCheckingResourceInterface
         return 'reflection.'.$this->className;
     }
 
-    /**
-     * @internal
-     */
     public function __serialize(): array
     {
         if (!isset($this->hash)) {

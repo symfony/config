@@ -101,9 +101,6 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
         return $this->exists[0] xor !$exists[0];
     }
 
-    /**
-     * @internal
-     */
     public function __serialize(): array
     {
         if (null === $this->exists) {
@@ -116,9 +113,6 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
         ];
     }
 
-    /**
-     * @internal
-     */
     public function __unserialize(array $data): void
     {
         $this->resource = array_shift($data);
