@@ -76,9 +76,6 @@ class GlobResource implements \IteratorAggregate, SelfCheckingResourceInterface
         return $this->hash === $hash;
     }
 
-    /**
-     * @internal
-     */
     public function __serialize(): array
     {
         $this->hash ??= $this->computeHash();
@@ -93,9 +90,6 @@ class GlobResource implements \IteratorAggregate, SelfCheckingResourceInterface
         ];
     }
 
-    /**
-     * @internal
-     */
     public function __unserialize(array $data): void
     {
         $this->prefix = array_shift($data);
