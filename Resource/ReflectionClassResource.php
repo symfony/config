@@ -69,6 +69,7 @@ class ReflectionClassResource implements SelfCheckingResourceInterface
         return [
             'files' => $this->files,
             'className' => $this->className,
+            'excludedVendors' => $this->excludedVendors,
             'hash' => $this->hash,
         ];
     }
