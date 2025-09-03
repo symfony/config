@@ -13,6 +13,7 @@ namespace Symfony\Component\Config\Tests\Resource;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Resource\ReflectionClassResource;
+use Symfony\Component\Config\Tests\Fixtures\FakeVendor\Base;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
@@ -71,7 +72,7 @@ class ReflectionClassResourceTest extends TestCase
 
         $code = <<<'EOPHP'
 /* 0*/
-/* 1*/  class %s extends ErrorException
+/* 1*/  class %s extends %s
 /* 2*/  {
 /* 3*/      const FOO = 123;
 /* 4*/
@@ -91,22 +92,27 @@ class ReflectionClassResourceTest extends TestCase
 /*18*/  }
 EOPHP;
 
-        static $expectedSignature, $generateSignature;
+        static $expectedSignature, $signatureGenerator;
 
         if (null === $expectedSignature) {
-            eval(\sprintf($code, $class = 'Foo'.(string) $resourceClassNameSuffix));
+            eval(\sprintf($code, $class = 'Foo'.(string) $resourceClassNameSuffix, Base::class));
+
             $r = new \ReflectionClass(ReflectionClassResource::class);
             $generateSignature = $r->getMethod('generateSignature');
-            $generateSignature = $generateSignature->getClosure($r->newInstanceWithoutConstructor());
-            $expectedSignature = implode("\n", iterator_to_array($generateSignature(new \ReflectionClass($class))));
+
+            $res = new ReflectionClassResource(new \ReflectionClass($class), [\dirname(__DIR__).'/Fixtures/FakeVendor']);
+            $signatureGenerator = $generateSignature->getClosure($res);
+            $expectedSignature = implode("\n", iterator_to_array($signatureGenerator(new \ReflectionClass($class))));
+
+            $signatureGenerator = $generateSignature->getClosure(unserialize(serialize($res)));
         }
 
         $code = explode("\n", $code);
         if (null !== $changedCode) {
             $code[$changedLine] = $changedCode;
         }
-        eval(\sprintf(implode("\n", $code), $class = 'Bar'.(string) $resourceClassNameSuffix));
-        $signature = implode("\n", iterator_to_array($generateSignature(new \ReflectionClass($class))));
+        eval(\sprintf(implode("\n", $code), $class = 'Bar'.(string) $resourceClassNameSuffix, Base::class));
+        $signature = implode("\n", iterator_to_array($signatureGenerator(new \ReflectionClass($class))));
 
         if ($changeExpected) {
             $this->assertNotSame($expectedSignature, $signature);
