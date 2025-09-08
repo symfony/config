@@ -345,7 +345,7 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
 
     public function append(NodeDefinition $node): static
     {
-        $this->children[$node->name] = $node->setParent($this);
+        $this->children[$node->name ?? ''] = $node->setParent($this);
 
         return $this;
     }
