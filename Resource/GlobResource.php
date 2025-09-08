@@ -117,7 +117,7 @@ class GlobResource implements \IteratorAggregate, SelfCheckingResourceInterface
         if (class_exists(Finder::class)) {
             $regex = Glob::toRegex($pattern);
             if ($this->recursive) {
-                $regex = substr_replace($regex, '(/|$)', -2, 1);
+                $regex = substr_replace($regex, str_ends_with($pattern, '/') ? '' : '(/|$)', -2, 1);
             }
         } else {
             $regex = null;
