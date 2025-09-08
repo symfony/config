@@ -25,23 +25,20 @@ class GlobResourceTest extends TestCase
         touch($dir.'/Resource/.hiddenFile');
     }
 
-    public function testIterator()
+    /**
+     * @testWith ["/Resource"]
+     *           ["/**\/Resource"]
+     *           ["/**\/Resource/"]
+     */
+    public function testIterator(string $pattern)
     {
         $dir = \dirname(__DIR__).\DIRECTORY_SEPARATOR.'Fixtures';
-        $resource = new GlobResource($dir, '/Resource', true);
+        $resource = new GlobResource($dir, $pattern, true);
 
         $paths = iterator_to_array($resource);
 
         $file = $dir.'/Resource'.\DIRECTORY_SEPARATOR.'ConditionalClass.php';
         $this->assertEquals([$file => new \SplFileInfo($file)], $paths);
-        $this->assertInstanceOf(\SplFileInfo::class, current($paths));
-        $this->assertSame($dir, $resource->getPrefix());
-
-        $resource = new GlobResource($dir, '/**/Resource', true);
-
-        $paths = iterator_to_array($resource);
-
-        $this->assertEquals([$file => $file], $paths);
         $this->assertInstanceOf(\SplFileInfo::class, current($paths));
         $this->assertSame($dir, $resource->getPrefix());
     }
