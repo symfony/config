@@ -57,6 +57,20 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
 
     /**
      * Sets a prototype for child nodes.
+     *
+     * @template T of 'variable'|'scalar'|'boolean'|'integer'|'float'|'enum'|'array'
+     *
+     * @param T $type
+     *
+     * @return (
+     *     T is 'variable' ? VariableNodeDefinition
+     *     : T is 'scalar' ? ScalarNodeDefinition
+     *     : T is 'boolean' ? BooleanNodeDefinition
+     *     : T is 'integer' ? IntegerNodeDefinition
+     *     : T is 'float' ? FloatNodeDefinition
+     *     : T is 'enum' ? EnumNodeDefinition
+     *     : ArrayNodeDefinition
+     * )
      */
     public function prototype(string $type): NodeDefinition
     {
