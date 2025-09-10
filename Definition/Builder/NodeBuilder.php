@@ -23,15 +23,16 @@ class NodeBuilder implements NodeParentInterface
 
     public function __construct()
     {
+        // This list should be in sync with generics in TreeBuilder and ArrayNodeDefinition
         $this->nodeMapping = [
+            'array' => ArrayNodeDefinition::class,
             'variable' => VariableNodeDefinition::class,
             'scalar' => ScalarNodeDefinition::class,
+            'string' => StringNodeDefinition::class,
             'boolean' => BooleanNodeDefinition::class,
             'integer' => IntegerNodeDefinition::class,
             'float' => FloatNodeDefinition::class,
-            'array' => ArrayNodeDefinition::class,
             'enum' => EnumNodeDefinition::class,
-            'string' => StringNodeDefinition::class,
         ];
     }
 
