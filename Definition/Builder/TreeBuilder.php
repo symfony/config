@@ -16,7 +16,7 @@ use Symfony\Component\Config\Definition\NodeInterface;
 /**
  * This is the entry class for building a config tree.
  *
- * @template T of 'variable'|'scalar'|'boolean'|'integer'|'float'|'enum'|'array'
+ * @template T of 'array'|'variable'|'scalar'|'string'|'boolean'|'integer'|'float'|'enum'
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
@@ -36,14 +36,16 @@ class TreeBuilder implements NodeParentInterface
 
     /**
      * @return (
-     *    T is 'variable' ? VariableNodeDefinition
-     *    : T is 'scalar' ? ScalarNodeDefinition
-     *    : T is 'boolean' ? BooleanNodeDefinition
-     *    : T is 'integer' ? IntegerNodeDefinition
-     *    : T is 'float' ? FloatNodeDefinition
-     *    : T is 'enum' ? EnumNodeDefinition
-     *    : ArrayNodeDefinition
-     * ) The root node (as an ArrayNodeDefinition when the type is 'array')
+     *    T is 'array' ? ArrayNodeDefinition
+     *    : (T is 'variable' ? VariableNodeDefinition
+     *    : (T is 'scalar' ? ScalarNodeDefinition
+     *    : (T is 'string' ? StringNodeDefinition
+     *    : (T is 'boolean' ? BooleanNodeDefinition
+     *    : (T is 'integer' ? IntegerNodeDefinition
+     *    : (T is 'float' ? FloatNodeDefinition
+     *    : (T is 'enum' ? EnumNodeDefinition
+     *    : NodeDefinition)))))))
+     * )
      */
     public function getRootNode(): NodeDefinition|ArrayNodeDefinition
     {
