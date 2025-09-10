@@ -45,6 +45,13 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
         $this->trueEquivalent = [];
     }
 
+    public function defaultValue(mixed $value): static
+    {
+        $this->nullEquivalent = null === $value ? null : [];
+
+        return parent::defaultValue($value);
+    }
+
     public function setBuilder(NodeBuilder $builder): void
     {
         $this->nodeBuilder = $builder;
@@ -405,11 +412,13 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
             }
 
             if ($this->default) {
-                if (!\is_array($this->defaultValue)) {
-                    throw new \InvalidArgumentException(\sprintf('%s: the default value of an array node has to be an array.', $node->getPath()));
+                if (null === $this->defaultValue) {
+                    $node->setNullAsDefault();
+                } elseif (!\is_array($this->defaultValue)) {
+                    throw new \InvalidArgumentException(\sprintf('%s: the default value of an array node has to be an array or null.', $node->getPath()));
+                } else {
+                    $node->setDefaultValue($this->defaultValue);
                 }
-
-                $node->setDefaultValue($this->defaultValue);
             }
 
             if (false !== $this->addDefaultChildren) {

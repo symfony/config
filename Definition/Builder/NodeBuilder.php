@@ -50,9 +50,19 @@ class NodeBuilder implements NodeParentInterface
 
     /**
      * Creates a child array node.
+     *
+     * @param string|null $singular The singular name of the node when $name is plural
      */
-    public function arrayNode(string $name): ArrayNodeDefinition
+    public function arrayNode(string $name/* , ?string $singular = null */): ArrayNodeDefinition
     {
+        $singular = 1 < \func_num_args() ? func_get_arg(1) : null;
+        if (null !== $singular) {
+            if (!$this->parent instanceof ArrayNodeDefinition) {
+                throw new \LogicException('The parent node must be an ArrayNodeDefinition when setting the singular name.');
+            }
+            $this->parent->fixXmlConfig($singular, $name);
+        }
+
         return $this->node($name, 'array');
     }
 

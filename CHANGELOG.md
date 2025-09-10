@@ -5,6 +5,8 @@ CHANGELOG
 ---
 
  * Add TagAwareAdapterInterface to NullAdapter
+ * Add argument `$singular` to `NodeBuilder::arrayNode()` to decouple plurals/singulars from XML
+ * Add support for `defaultNull()` on `ArrayNodeDefinition`
 
 7.3
 ---
@@ -20,7 +22,7 @@ CHANGELOG
  * Add `#[WhenNot]` attribute to prevent service from being registered in a specific environment
  * Generate a meta file in JSON format for resource tracking
  * Add `SkippingResourceChecker`
- * Add support for `defaultNull()` on `BooleanNode`
+ * Add support for `defaultNull()` on `BooleanNodeDefinition`
  * Add `StringNode` and `StringNodeDefinition`
  * Add `ArrayNodeDefinition::stringPrototype()` method
  * Add `NodeBuilder::stringNode()` method
