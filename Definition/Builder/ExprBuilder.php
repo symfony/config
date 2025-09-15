@@ -16,6 +16,8 @@ use Symfony\Component\Config\Definition\Exception\UnsetKeyException;
 /**
  * This class builds an if expression.
  *
+ * @template T of NodeDefinition
+ *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  * @author Christophe Coevoet <stof@notk.org>
  */
@@ -30,6 +32,9 @@ class ExprBuilder
     public ?\Closure $ifPart = null;
     public ?\Closure $thenPart = null;
 
+    /**
+     * @param T $node
+     */
     public function __construct(
         protected NodeDefinition $node,
     ) {
@@ -231,9 +236,11 @@ class ExprBuilder
     /**
      * Returns the related node.
      *
+     * @return T
+     *
      * @throws \RuntimeException
      */
-    public function end(): NodeDefinition|ArrayNodeDefinition|VariableNodeDefinition
+    public function end(): NodeDefinition
     {
         if (null === $this->ifPart) {
             throw new \RuntimeException('You must specify an if part.');
@@ -248,7 +255,9 @@ class ExprBuilder
     /**
      * Builds the expressions.
      *
-     * @param ExprBuilder[] $expressions An array of ExprBuilder instances to build
+     * @param (ExprBuilder|\Closure)[] $expressions
+     *
+     * @return \Closure[]
      */
     public static function buildExpressions(array $expressions): array
     {
