@@ -44,18 +44,9 @@ class BooleanNodeDefinition extends ScalarNodeDefinition
         throw new InvalidDefinitionException('->cannotBeEmpty() is not applicable to BooleanNodeDefinition.');
     }
 
-    public function defaultNull(): static
-    {
-        $this->nullEquivalent = null;
-
-        return parent::defaultNull();
-    }
-
     public function defaultValue(mixed $value): static
     {
-        if (null === $value) {
-            $this->nullEquivalent = null;
-        }
+        $this->nullEquivalent = null === $value ? null : true;
 
         return parent::defaultValue($value);
     }

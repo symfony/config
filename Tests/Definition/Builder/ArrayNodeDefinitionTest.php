@@ -306,6 +306,31 @@ class ArrayNodeDefinitionTest extends TestCase
         $this->assertEquals($node->prototype('array'), $node->arrayPrototype());
     }
 
+    public function testPrototypedArrayAllowsNullDefault()
+    {
+        $node = new ArrayNodeDefinition('root');
+        $node
+            ->defaultValue(null)
+            ->prototype('array')
+        ;
+
+        $tree = $node->getNode();
+        $this->assertNull($tree->getDefaultValue());
+    }
+
+    public function testPrototypedArrayRejectsNonArrayDefaultValue()
+    {
+        $node = new ArrayNodeDefinition('root');
+        $node
+            ->defaultValue('not-an-array')
+            ->prototype('array')
+        ;
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('the default value of an array node has to be an array or null');
+        $node->getNode();
+    }
+
     public function testPrototypeEnum()
     {
         $node = new ArrayNodeDefinition('root');
