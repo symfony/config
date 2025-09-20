@@ -120,8 +120,7 @@ class YamlReferenceDumper
 
         // deprecated?
         if ($node instanceof BaseNode && $node->isDeprecated()) {
-            $deprecation = $node->getDeprecation($node->getName(), $parentNode ? $parentNode->getPath() : $node->getPath());
-            $comments[] = \sprintf('Deprecated (%s)', ($deprecation['package'] || $deprecation['version'] ? "Since {$deprecation['package']} {$deprecation['version']}: " : '').$deprecation['message']);
+            $comments[] = \sprintf('Deprecated (%s)', $node->getDeprecationMessage($parentNode));
         }
 
         // example
