@@ -89,8 +89,8 @@ class YamlReferenceDumper
                 $children = $this->getPrototypeChildren($node);
             }
 
-            if (!$children && !($node->hasDefaultValue() && \count($defaultArray = $node->getDefaultValue()))) {
-                $default = '[]';
+            if (!$children && !($node->hasDefaultValue() && $defaultArray = $node->getDefaultValue())) {
+                $default = $node->hasDefaultValue() && null === $defaultArray ? '~' : '[]';
             }
         } elseif ($node instanceof EnumNode) {
             $comments[] = 'One of '.$node->getPermissibleValues('; ');
