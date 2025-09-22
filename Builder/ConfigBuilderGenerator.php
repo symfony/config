@@ -446,7 +446,7 @@ public function NAME($value): static
         }
 
         if ($node->isDeprecated()) {
-            $comment .= '@deprecated '.$node->getDeprecation($node->getName(), $node->getParent()->getName())['message']."\n";
+            $comment .= '@deprecated '.$node->getDeprecationMessage()."\n";
         }
 
         return $comment ? ' * '.str_replace("\n", "\n * ", rtrim($comment, "\n"))."\n" : '';

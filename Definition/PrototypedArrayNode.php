@@ -119,7 +119,7 @@ class PrototypedArrayNode extends ArrayNode
     }
 
     /**
-     * The default value could be either explicited or derived from the prototype
+     * The default value could be either explicit or derived from the prototype
      * default value.
      */
     public function getDefaultValue(): mixed

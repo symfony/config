@@ -115,6 +115,7 @@ class YamlReferenceDumperTest extends TestCase
                     # which should be indented
                     child3:               ~ # Example: 'example setting'
                 scalar_prototyped:    []
+                string_list_default_null: ~
                 variable:             ~
 
                     # Examples:
