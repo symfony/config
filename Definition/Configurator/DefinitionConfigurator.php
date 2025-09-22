@@ -17,7 +17,7 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Loader\DefinitionFileLoader;
 
 /**
- * @template T of 'array'|'variable'|'scalar'|'string'|'boolean'|'integer'|'float'|'enum'
+ * @template T of 'array'|'variable'|'scalar'|'string'|'boolean'|'integer'|'float'|'enum' = 'array'
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
