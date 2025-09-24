@@ -12,6 +12,7 @@ CHANGELOG
  * Add TagAwareAdapterInterface to NullAdapter
  * Add argument `$singular` to `NodeBuilder::arrayNode()` to decouple plurals/singulars from XML
  * Add support for `defaultNull()` on `ArrayNodeDefinition`
+ * Add `ArrayNodeDefinition::acceptAndWrap()` to list alternative types that should be accepted and wrapped in an array
 
 7.3
 ---
