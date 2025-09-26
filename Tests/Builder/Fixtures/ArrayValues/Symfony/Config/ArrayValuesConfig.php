@@ -42,11 +42,22 @@ class ArrayValuesConfig implements \Symfony\Component\Config\Builder\ConfigBuild
     }
 
     /**
+     * @template TValue of array|bool
+     * @param TValue $value
      * @default {"enabled":false}
-    */
-    public function errorPages(array $value = []): \Symfony\Config\ArrayValues\ErrorPagesConfig
+     * @return \Symfony\Config\ArrayValues\ErrorPagesConfig|$this
+     * @psalm-return (TValue is array ? \Symfony\Config\ArrayValues\ErrorPagesConfig : static)
+     */
+    public function errorPages(array|bool $value = []): \Symfony\Config\ArrayValues\ErrorPagesConfig|static
     {
-        if (null === $this->errorPages) {
+        if (!\is_array($value)) {
+            $this->_usedProperties['errorPages'] = true;
+            $this->errorPages = $value;
+
+            return $this;
+        }
+
+        if (!$this->errorPages instanceof \Symfony\Config\ArrayValues\ErrorPagesConfig) {
             $this->_usedProperties['errorPages'] = true;
             $this->errorPages = new \Symfony\Config\ArrayValues\ErrorPagesConfig($value);
         } elseif (0 < \func_num_args()) {

@@ -354,7 +354,7 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
             ->treatNullLike(['enabled' => true])
             ->beforeNormalization()
                 ->ifArray()
-                ->then(function (array $v) {
+                ->then(static function ($v) {
                     $v['enabled'] ??= true;
 
                     return $v;
@@ -527,8 +527,14 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
         }
 
         if (isset($this->normalization)) {
+            $allowedTypes = $this->allowedTypes ?? $this->normalization->declaredTypes;
+            foreach ([$this->trueEquivalent, $this->falseEquivalent] as $equivalent) {
+                if (\is_array($equivalent) && $equivalent) {
+                    $allowedTypes[] = ExprBuilder::TYPE_BOOL;
+                }
+            }
             $node->setNormalizationClosures($this->normalization->before);
-            $node->setNormalizedTypes($this->allowedTypes ?? $this->normalization->declaredTypes);
+            $node->setNormalizedTypes($allowedTypes ?: [ExprBuilder::TYPE_ARRAY]);
             $node->setXmlRemappings($this->normalization->remappings);
         }
 
