@@ -14,6 +14,8 @@ CHANGELOG
  * Add argument `$singular` to `NodeBuilder::arrayNode()` to decouple plurals/singulars from XML
  * Add support for `defaultNull()` on `ArrayNodeDefinition`
  * Add `ArrayNodeDefinition::acceptAndWrap()` to list alternative types that should be accepted and wrapped in an array
+ * Add array-shapes to generated config builders
+ * Deprecate accessing the internal scope of the loader in PHP config files, use only its public API instead
 
 7.3
 ---
