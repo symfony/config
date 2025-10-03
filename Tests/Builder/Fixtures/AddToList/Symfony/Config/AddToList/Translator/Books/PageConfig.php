@@ -42,25 +42,8 @@ class PageConfig
 
     /**
      * @param array{
-     *     translator?: array{
-     *         fallbacks?: list<scalar|null>,
-     *         sources?: array<string, scalar|null>,
-     *         books?: array{ // Deprecated: The child node "books" at path "add_to_list.translator.books" is deprecated. // looks for translation in old fashion way
-     *             page?: list<array{
-     *                 number?: int<min, max>,
-     *                 content?: scalar|null,
-     *             }>,
-     *         },
-     *     },
-     *     messenger?: array{
-     *         routing?: array<string, array{
-     *             senders?: list<scalar|null>,
-     *         }>,
-     *         receiving?: list<array{
-     *             priority?: int<min, max>,
-     *             color?: scalar|null,
-     *         }>,
-     *     },
+     *     number?: int<min, max>,
+     *     content?: scalar|null,
      * } $config
      */
     public function __construct(array $config = [])

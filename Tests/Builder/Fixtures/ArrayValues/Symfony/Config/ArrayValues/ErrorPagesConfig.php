@@ -41,14 +41,9 @@ class ErrorPagesConfig
     }
 
     /**
-     * @param array{
-     *     transports?: array<string, array{
-     *         dsn?: scalar|null,
-     *     }>,
-     *     error_pages?: array{ // Default: {"enabled":false}
-     *         enabled?: bool, // Default: false
-     *         with_trace?: bool,
-     *     },
+     * @param array{ // Default: {"enabled":false}
+     *     enabled?: bool, // Default: false
+     *     with_trace?: bool,
      * } $config
      */
     public function __construct(array $config = [])

@@ -27,30 +27,8 @@ class NestedObjectConfig
     }
 
     /**
-     * @param array{
-     *     simple_array?: list<scalar|null>,
-     *     keyed_array?: array<string, list<scalar|null>>,
-     *     object?: array{ // Default: {"enabled":null}
-     *         enabled?: bool|null, // Default: null
-     *         date_format?: scalar|null,
-     *         remove_used_context_fields?: bool,
-     *     },
-     *     list_object: list<array{
-     *         name: scalar|null,
-     *         data?: list<mixed>,
-     *     }>,
-     *     keyed_list_object?: array<string, array{
-     *         enabled?: bool, // Default: true
-     *         settings?: list<scalar|null>,
-     *     }>,
-     *     nested?: array{
-     *         nested_object?: array{ // Default: {"enabled":null}
-     *             enabled?: bool|null, // Default: null
-     *         },
-     *         nested_list_object?: list<array{
-     *             name: scalar|null,
-     *         }>,
-     *     },
+     * @param array{ // Default: {"enabled":null}
+     *     enabled?: bool|null, // Default: null
      * } $config
      */
     public function __construct(array $config = [])

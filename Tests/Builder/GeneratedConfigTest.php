@@ -170,7 +170,7 @@ class GeneratedConfigTest extends TestCase
 
         $configuration = new $configurationClass();
         $rootNode = $configuration->getConfigTreeBuilder()->buildTree();
-        $rootClass = new ClassBuilder('Symfony\\Config', $rootNode->getName());
+        $rootClass = new ClassBuilder('Symfony\\Config', $rootNode->getName(), $rootNode);
         if (class_exists($fqcn = $rootClass->getFqcn())) {
             // Avoid generating the class again
             return new $fqcn();

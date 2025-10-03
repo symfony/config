@@ -51,7 +51,7 @@ class ConfigBuilderGenerator implements ConfigBuilderGeneratorInterface
         $this->classes = [];
 
         $rootNode = $configuration->getConfigTreeBuilder()->buildTree();
-        $rootClass = new ClassBuilder('Symfony\\Config', $rootNode->getName());
+        $rootClass = new ClassBuilder('Symfony\\Config', $rootNode->getName(), $rootNode);
 
         $path = $this->getFullPath($rootClass);
         if (!is_file($path)) {
@@ -65,7 +65,7 @@ public function NAME(): string
     return \'ALIAS\';
 }', ['ALIAS' => $rootNode->getPath()]);
 
-            $this->writeClasses($rootNode);
+            $this->writeClasses();
         }
 
         return function () use ($path, $rootClass) {
@@ -86,10 +86,10 @@ public function NAME(): string
         return $directory.\DIRECTORY_SEPARATOR.$class->getFilename();
     }
 
-    private function writeClasses(NodeInterface $node): void
+    private function writeClasses(): void
     {
         foreach ($this->classes as $class) {
-            $this->buildConstructor($class, $node);
+            $this->buildConstructor($class, $class->getNode());
             $this->buildToArray($class);
             if ($class->getProperties()) {
                 $class->addProperty('_usedProperties', null, '[]');
@@ -121,7 +121,7 @@ public function NAME(): string
 
     private function handleArrayNode(ArrayNode $node, ClassBuilder $class, string $namespace): void
     {
-        $childClass = new ClassBuilder($namespace, $node->getName());
+        $childClass = new ClassBuilder($namespace, $node->getName(), $node);
         $childClass->setAllowExtraKeys($node->shouldIgnoreExtraKeys());
         $class->addRequire($childClass);
         $this->classes[] = $childClass;
@@ -271,7 +271,7 @@ public function NAME(string $VAR, TYPE $VALUE): static
             return;
         }
 
-        $childClass = new ClassBuilder($namespace, $name);
+        $childClass = new ClassBuilder($namespace, $name, $prototype);
         if ($prototype instanceof ArrayNode) {
             $childClass->setAllowExtraKeys($prototype->shouldIgnoreExtraKeys());
         }
