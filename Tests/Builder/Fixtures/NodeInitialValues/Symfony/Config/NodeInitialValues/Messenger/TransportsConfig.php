@@ -59,18 +59,9 @@ class TransportsConfig
 
     /**
      * @param array{
-     *     some_clever_name?: array{
-     *         first?: scalar|null,
-     *         second?: scalar|null,
-     *         third?: scalar|null,
-     *     },
-     *     messenger?: array{
-     *         transports?: array<string, array{
-     *             dsn?: scalar|null, // The DSN to use. This is a required option. The info is used to describe the DSN, it can be multi-line.
-     *             serializer?: scalar|null, // Default: null
-     *             options?: list<mixed>,
-     *         }>,
-     *     },
+     *     dsn?: scalar|null, // The DSN to use. This is a required option. The info is used to describe the DSN, it can be multi-line.
+     *     serializer?: scalar|null, // Default: null
+     *     options?: list<mixed>,
      * } $config
      */
     public function __construct(array $config = [])

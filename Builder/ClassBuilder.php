@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\Config\Builder;
 
+use Symfony\Component\Config\Definition\NodeInterface;
+
 /**
  * Build PHP classes to generate config.
  *
@@ -35,6 +37,7 @@ class ClassBuilder
     public function __construct(
         private string $namespace,
         string $name,
+        private NodeInterface $node,
     ) {
         $this->name = ucfirst($this->camelCase($name)).'Config';
     }
@@ -165,5 +168,10 @@ BODY
     public function shouldAllowExtraKeys(): bool
     {
         return $this->allowExtraKeys;
+    }
+
+    public function getNode(): NodeInterface
+    {
+        return $this->node;
     }
 }

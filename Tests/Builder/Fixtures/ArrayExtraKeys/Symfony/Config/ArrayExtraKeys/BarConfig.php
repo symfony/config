@@ -42,17 +42,9 @@ class BarConfig
 
     /**
      * @param array{
-     *     foo?: array{
-     *         baz?: scalar|null,
-     *         qux?: scalar|null,
-     *         ...<mixed>
-     *     },
-     *     bar?: list<array{
-     *         corge?: scalar|null,
-     *         grault?: scalar|null,
-     *         ...<mixed>
-     *     }>,
-     *     baz?: array<mixed>,
+     *     corge?: scalar|null,
+     *     grault?: scalar|null,
+     *     ...<mixed>
      * } $config
      */
     public function __construct(array $config = [])

@@ -12,19 +12,7 @@ class BazConfig
     private $_extraKeys;
 
     /**
-     * @param array{
-     *     foo?: array{
-     *         baz?: scalar|null,
-     *         qux?: scalar|null,
-     *         ...<mixed>
-     *     },
-     *     bar?: list<array{
-     *         corge?: scalar|null,
-     *         grault?: scalar|null,
-     *         ...<mixed>
-     *     }>,
-     *     baz?: array<mixed>,
-     * } $config
+     * @param array<mixed> $config
      */
     public function __construct(array $config = [])
     {
