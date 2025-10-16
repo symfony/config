@@ -15,9 +15,14 @@ class NodeInitialValuesConfig implements \Symfony\Component\Config\Builder\Confi
     private $someCleverName;
     private $messenger;
     private $_usedProperties = [];
+    private $_hasDeprecatedCalls = false;
 
+    /**
+     * @deprecated since Symfony 7.4
+     */
     public function someCleverName(array $value = []): \Symfony\Config\NodeInitialValues\SomeCleverNameConfig
     {
+        $this->_hasDeprecatedCalls = true;
         if (null === $this->someCleverName) {
             $this->_usedProperties['someCleverName'] = true;
             $this->someCleverName = new \Symfony\Config\NodeInitialValues\SomeCleverNameConfig($value);
@@ -28,8 +33,12 @@ class NodeInitialValuesConfig implements \Symfony\Component\Config\Builder\Confi
         return $this->someCleverName;
     }
 
+    /**
+     * @deprecated since Symfony 7.4
+     */
     public function messenger(array $value = []): \Symfony\Config\NodeInitialValues\MessengerConfig
     {
+        $this->_hasDeprecatedCalls = true;
         if (null === $this->messenger) {
             $this->_usedProperties['messenger'] = true;
             $this->messenger = new \Symfony\Config\NodeInitialValues\MessengerConfig($value);
@@ -88,6 +97,9 @@ class NodeInitialValuesConfig implements \Symfony\Component\Config\Builder\Confi
         }
         if (isset($this->_usedProperties['messenger'])) {
             $output['messenger'] = $this->messenger->toArray();
+        }
+        if ($this->_hasDeprecatedCalls) {
+            trigger_deprecation('symfony/config', '7.4', 'Calling any fluent method on "%s" is deprecated; pass the configuration to the constructor instead.', $this::class);
         }
 
         return $output;

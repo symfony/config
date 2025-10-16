@@ -17,7 +17,7 @@ class BooksConfig
     /**
      * @example "page 1"
      * @default {"number":1,"content":""}
-    */
+     */
     public function page(array $value = []): \Symfony\Config\AddToList\Translator\Books\PageConfig
     {
         $this->_usedProperties['page'] = true;

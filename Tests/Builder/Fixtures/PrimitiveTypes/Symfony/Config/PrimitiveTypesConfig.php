@@ -19,14 +19,17 @@ class PrimitiveTypesConfig implements \Symfony\Component\Config\Builder\ConfigBu
     private $scalarNode;
     private $scalarNodeWithDefault;
     private $_usedProperties = [];
+    private $_hasDeprecatedCalls = false;
 
     /**
      * @default null
      * @param ParamConfigurator|bool $value
      * @return $this
+     * @deprecated since Symfony 7.4
      */
     public function booleanNode($value): static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['booleanNode'] = true;
         $this->booleanNode = $value;
 
@@ -37,9 +40,11 @@ class PrimitiveTypesConfig implements \Symfony\Component\Config\Builder\ConfigBu
      * @default null
      * @param ParamConfigurator|'foo'|'bar'|'baz'|\Symfony\Component\Config\Tests\Fixtures\TestEnum::Bar $value
      * @return $this
+     * @deprecated since Symfony 7.4
      */
     public function enumNode($value): static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['enumNode'] = true;
         $this->enumNode = $value;
 
@@ -50,9 +55,11 @@ class PrimitiveTypesConfig implements \Symfony\Component\Config\Builder\ConfigBu
      * @default null
      * @param ParamConfigurator|\Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum::Foo|\Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum::Bar $value
      * @return $this
+     * @deprecated since Symfony 7.4
      */
     public function fqcnEnumNode($value): static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['fqcnEnumNode'] = true;
         $this->fqcnEnumNode = $value;
 
@@ -63,9 +70,11 @@ class PrimitiveTypesConfig implements \Symfony\Component\Config\Builder\ConfigBu
      * @default null
      * @param ParamConfigurator|\Symfony\Component\Config\Tests\Fixtures\TestEnum::Foo|\Symfony\Component\Config\Tests\Fixtures\TestEnum::Bar|\Symfony\Component\Config\Tests\Fixtures\TestEnum::Ccc $value
      * @return $this
+     * @deprecated since Symfony 7.4
      */
     public function fqcnUnitEnumNode($value): static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['fqcnUnitEnumNode'] = true;
         $this->fqcnUnitEnumNode = $value;
 
@@ -76,9 +85,11 @@ class PrimitiveTypesConfig implements \Symfony\Component\Config\Builder\ConfigBu
      * @default null
      * @param ParamConfigurator|float $value
      * @return $this
+     * @deprecated since Symfony 7.4
      */
     public function floatNode($value): static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['floatNode'] = true;
         $this->floatNode = $value;
 
@@ -89,9 +100,11 @@ class PrimitiveTypesConfig implements \Symfony\Component\Config\Builder\ConfigBu
      * @default null
      * @param ParamConfigurator|int $value
      * @return $this
+     * @deprecated since Symfony 7.4
      */
     public function integerNode($value): static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['integerNode'] = true;
         $this->integerNode = $value;
 
@@ -102,9 +115,11 @@ class PrimitiveTypesConfig implements \Symfony\Component\Config\Builder\ConfigBu
      * @default null
      * @param ParamConfigurator|mixed $value
      * @return $this
+     * @deprecated since Symfony 7.4
      */
     public function scalarNode($value): static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['scalarNode'] = true;
         $this->scalarNode = $value;
 
@@ -115,9 +130,11 @@ class PrimitiveTypesConfig implements \Symfony\Component\Config\Builder\ConfigBu
      * @default true
      * @param ParamConfigurator|mixed $value
      * @return $this
+     * @deprecated since Symfony 7.4
      */
     public function scalarNodeWithDefault($value): static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['scalarNodeWithDefault'] = true;
         $this->scalarNodeWithDefault = $value;
 
@@ -222,6 +239,9 @@ class PrimitiveTypesConfig implements \Symfony\Component\Config\Builder\ConfigBu
         }
         if (isset($this->_usedProperties['scalarNodeWithDefault'])) {
             $output['scalar_node_with_default'] = $this->scalarNodeWithDefault;
+        }
+        if ($this->_hasDeprecatedCalls) {
+            trigger_deprecation('symfony/config', '7.4', 'Calling any fluent method on "%s" is deprecated; pass the configuration to the constructor instead.', $this::class);
         }
 
         return $output;

@@ -12,15 +12,18 @@ class VariableTypeConfig implements \Symfony\Component\Config\Builder\ConfigBuil
 {
     private $anyValue;
     private $_usedProperties = [];
+    private $_hasDeprecatedCalls = false;
 
     /**
      * @default null
      * @param ParamConfigurator|mixed $value
      *
      * @return $this
+     * @deprecated since Symfony 7.4
      */
     public function anyValue(mixed $value): static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['anyValue'] = true;
         $this->anyValue = $value;
 
@@ -55,6 +58,9 @@ class VariableTypeConfig implements \Symfony\Component\Config\Builder\ConfigBuil
         $output = [];
         if (isset($this->_usedProperties['anyValue'])) {
             $output['any_value'] = $this->anyValue;
+        }
+        if ($this->_hasDeprecatedCalls) {
+            trigger_deprecation('symfony/config', '7.4', 'Calling any fluent method on "%s" is deprecated; pass the configuration to the constructor instead.', $this::class);
         }
 
         return $output;

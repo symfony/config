@@ -11,6 +11,6 @@
 
 use Symfony\Config\VariableTypeConfig;
 
-return new VariableTypeConfig([
-    'any_value' => 'foobar',
-]);
+return static function (VariableTypeConfig $config) {
+    $config->anyValue('foobar');
+};

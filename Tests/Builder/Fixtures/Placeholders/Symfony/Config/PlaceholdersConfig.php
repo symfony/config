@@ -14,14 +14,17 @@ class PlaceholdersConfig implements \Symfony\Component\Config\Builder\ConfigBuil
     private $favoriteFloat;
     private $goodIntegers;
     private $_usedProperties = [];
+    private $_hasDeprecatedCalls = false;
 
     /**
      * @default false
      * @param ParamConfigurator|bool $value
      * @return $this
+     * @deprecated since Symfony 7.4
      */
     public function enabled($value): static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['enabled'] = true;
         $this->enabled = $value;
 
@@ -32,9 +35,11 @@ class PlaceholdersConfig implements \Symfony\Component\Config\Builder\ConfigBuil
      * @default null
      * @param ParamConfigurator|float $value
      * @return $this
+     * @deprecated since Symfony 7.4
      */
     public function favoriteFloat($value): static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['favoriteFloat'] = true;
         $this->favoriteFloat = $value;
 
@@ -45,9 +50,11 @@ class PlaceholdersConfig implements \Symfony\Component\Config\Builder\ConfigBuil
      * @param ParamConfigurator|list<ParamConfigurator|int> $value
      *
      * @return $this
+     * @deprecated since Symfony 7.4
      */
     public function goodIntegers(ParamConfigurator|array $value): static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['goodIntegers'] = true;
         $this->goodIntegers = $value;
 
@@ -102,6 +109,9 @@ class PlaceholdersConfig implements \Symfony\Component\Config\Builder\ConfigBuil
         }
         if (isset($this->_usedProperties['goodIntegers'])) {
             $output['good_integers'] = $this->goodIntegers;
+        }
+        if ($this->_hasDeprecatedCalls) {
+            trigger_deprecation('symfony/config', '7.4', 'Calling any fluent method on "%s" is deprecated; pass the configuration to the constructor instead.', $this::class);
         }
 
         return $output;

@@ -13,6 +13,8 @@ namespace Symfony\Component\Config\Tests\Builder;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Builder\ClassBuilder;
 use Symfony\Component\Config\Builder\ConfigBuilderGenerator;
@@ -81,7 +83,6 @@ class GeneratedConfigTest extends TestCase
     public function testConfig(string $name, string $alias)
     {
         $basePath = __DIR__.'/Fixtures/';
-        $callback = include $basePath.$name.'.config.php';
         $expectedOutput = include $basePath.$name.'.output.php';
         $expectedCode = $basePath.$name;
 
@@ -90,7 +91,34 @@ class GeneratedConfigTest extends TestCase
         // $this->generateConfigBuilder('Symfony\\Component\\Config\\Tests\\Builder\\Fixtures\\'.$name, $expectedCode);
         // $this->markTestIncomplete('Re-comment the line above and relaunch the tests');
 
+        $this->generateConfigBuilder('Symfony\\Component\\Config\\Tests\\Builder\\Fixtures\\'.$name, $outputDir);
+
+        $config = include $basePath.$name.'.config.php';
+
+        $this->assertDirectorySame($expectedCode, $outputDir);
+
+        $this->assertInstanceOf(ConfigBuilderInterface::class, $config);
+        $this->assertSame($alias, $config->getExtensionAlias());
+        $output = $config->toArray();
+        if (class_exists(AbstractConfigurator::class)) {
+            $output = AbstractConfigurator::processValue($output);
+        }
+        $this->assertSame($expectedOutput, $output);
+    }
+
+    #[DataProvider('fixtureNames')]
+    #[IgnoreDeprecations]
+    #[Group('legacy')]
+    public function testLegacyConfig(string $name, string $alias)
+    {
+        $basePath = __DIR__.'/Fixtures/';
+        $callback = include $basePath.$name.'.legacy.php';
+        $expectedOutput = include $basePath.$name.'.output.php';
+        $expectedCode = $basePath.$name;
+
         $configBuilder = $this->generateConfigBuilder('Symfony\\Component\\Config\\Tests\\Builder\\Fixtures\\'.$name, $outputDir);
+
+        $this->expectUserDeprecationMessageMatches('{^Since symfony/config 7.4: Calling any fluent method on "Symfony\\\\Config\\\\.*Config" is deprecated; pass the configuration to the constructor instead\.}');
         $callback($configBuilder);
 
         $this->assertDirectorySame($expectedCode, $outputDir);
@@ -171,14 +199,11 @@ class GeneratedConfigTest extends TestCase
         $configuration = new $configurationClass();
         $rootNode = $configuration->getConfigTreeBuilder()->buildTree();
         $rootClass = new ClassBuilder('Symfony\\Config', $rootNode->getName(), $rootNode);
-        if (class_exists($fqcn = $rootClass->getFqcn())) {
-            // Avoid generating the class again
-            return new $fqcn();
-        }
+        $fqcn = $rootClass->getFqcn();
 
         $loader = (new ConfigBuilderGenerator($outputDir))->build(new $configurationClass());
 
-        return $loader();
+        return class_exists($fqcn) ? new $fqcn() : $loader();
     }
 
     private function assertDirectorySame($expected, $current)

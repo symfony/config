@@ -15,9 +15,14 @@ class AddToListConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
     private $translator;
     private $messenger;
     private $_usedProperties = [];
+    private $_hasDeprecatedCalls = false;
 
+    /**
+     * @deprecated since Symfony 7.4
+     */
     public function translator(array $value = []): \Symfony\Config\AddToList\TranslatorConfig
     {
+        $this->_hasDeprecatedCalls = true;
         if (null === $this->translator) {
             $this->_usedProperties['translator'] = true;
             $this->translator = new \Symfony\Config\AddToList\TranslatorConfig($value);
@@ -28,8 +33,12 @@ class AddToListConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
         return $this->translator;
     }
 
+    /**
+     * @deprecated since Symfony 7.4
+     */
     public function messenger(array $value = []): \Symfony\Config\AddToList\MessengerConfig
     {
+        $this->_hasDeprecatedCalls = true;
         if (null === $this->messenger) {
             $this->_usedProperties['messenger'] = true;
             $this->messenger = new \Symfony\Config\AddToList\MessengerConfig($value);
@@ -95,6 +104,9 @@ class AddToListConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
         }
         if (isset($this->_usedProperties['messenger'])) {
             $output['messenger'] = $this->messenger->toArray();
+        }
+        if ($this->_hasDeprecatedCalls) {
+            trigger_deprecation('symfony/config', '7.4', 'Calling any fluent method on "%s" is deprecated; pass the configuration to the constructor instead.', $this::class);
         }
 
         return $output;
