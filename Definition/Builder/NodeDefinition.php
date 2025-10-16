@@ -178,6 +178,11 @@ abstract class NodeDefinition implements NodeParentInterface
      */
     public function defaultValue(mixed $value): static
     {
+        if ($this->required) {
+            // throw new InvalidDefinitionException(sprintf('The node "%s" cannot be required and have a default value.', $this->name));
+            trigger_deprecation('symfony/config', '7.4', 'Setting a default value to a required node is deprecated. Remove the default value from the node "%s" or make it optional.', $this->name);
+        }
+
         $this->default = true;
         $this->defaultValue = $value;
 
@@ -191,6 +196,11 @@ abstract class NodeDefinition implements NodeParentInterface
      */
     public function isRequired(): static
     {
+        if ($this->default) {
+            // throw new InvalidDefinitionException(sprintf('The node "%s" cannot be required and have a default value.', $this->name));
+            trigger_deprecation('symfony/config', '7.4', 'Flagging a node with a default value as required is deprecated. Remove the default from node "%s" or make it optional.', $this->name);
+        }
+
         $this->required = true;
 
         return $this;
