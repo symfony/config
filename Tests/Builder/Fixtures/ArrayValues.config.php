@@ -11,9 +11,12 @@
 
 use Symfony\Config\ArrayValuesConfig;
 
-return static function (ArrayValuesConfig $config) {
-    $config->transports('foo')->dsn('bar');
-    $config->transports('bar', ['dsn' => 'foobar']);
-
-    $config->errorPages()->withTrace(false);
-};
+return new ArrayValuesConfig([
+    'transports' => [
+        'foo' => ['dsn' => 'bar'],
+        'bar' => ['dsn' => 'foobar'],
+    ],
+    'error_pages' => [
+        'with_trace' => false,
+    ],
+]);

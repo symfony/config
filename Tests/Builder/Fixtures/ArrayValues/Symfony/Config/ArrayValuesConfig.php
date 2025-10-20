@@ -15,15 +15,18 @@ class ArrayValuesConfig implements \Symfony\Component\Config\Builder\ConfigBuild
     private $transports;
     private $errorPages;
     private $_usedProperties = [];
+    private $_hasDeprecatedCalls = false;
 
     /**
      * @template TValue of string|array
      * @param TValue $value
      * @return \Symfony\Config\ArrayValues\TransportsConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\ArrayValues\TransportsConfig : static)
+     * @deprecated since Symfony 7.4
      */
     public function transports(string $name, string|array $value = []): \Symfony\Config\ArrayValues\TransportsConfig|static
     {
+        $this->_hasDeprecatedCalls = true;
         if (!\is_array($value)) {
             $this->_usedProperties['transports'] = true;
             $this->transports[$name] = $value;
@@ -47,9 +50,11 @@ class ArrayValuesConfig implements \Symfony\Component\Config\Builder\ConfigBuild
      * @default {"enabled":false}
      * @return \Symfony\Config\ArrayValues\ErrorPagesConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\ArrayValues\ErrorPagesConfig : static)
+     * @deprecated since Symfony 7.4
      */
     public function errorPages(array|bool $value = []): \Symfony\Config\ArrayValues\ErrorPagesConfig|static
     {
+        $this->_hasDeprecatedCalls = true;
         if (!\is_array($value)) {
             $this->_usedProperties['errorPages'] = true;
             $this->errorPages = $value;
@@ -110,6 +115,9 @@ class ArrayValuesConfig implements \Symfony\Component\Config\Builder\ConfigBuild
         }
         if (isset($this->_usedProperties['errorPages'])) {
             $output['error_pages'] = $this->errorPages instanceof \Symfony\Config\ArrayValues\ErrorPagesConfig ? $this->errorPages->toArray() : $this->errorPages;
+        }
+        if ($this->_hasDeprecatedCalls) {
+            trigger_deprecation('symfony/config', '7.4', 'Calling any fluent method on "%s" is deprecated; pass the configuration to the constructor instead.', $this::class);
         }
 
         return $output;

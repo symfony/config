@@ -17,9 +17,14 @@ class ArrayExtraKeysConfig implements \Symfony\Component\Config\Builder\ConfigBu
     private $bar;
     private $baz;
     private $_usedProperties = [];
+    private $_hasDeprecatedCalls = false;
 
+    /**
+     * @deprecated since Symfony 7.4
+     */
     public function foo(array $value = []): \Symfony\Config\ArrayExtraKeys\FooConfig
     {
+        $this->_hasDeprecatedCalls = true;
         if (null === $this->foo) {
             $this->_usedProperties['foo'] = true;
             $this->foo = new \Symfony\Config\ArrayExtraKeys\FooConfig($value);
@@ -30,15 +35,23 @@ class ArrayExtraKeysConfig implements \Symfony\Component\Config\Builder\ConfigBu
         return $this->foo;
     }
 
+    /**
+     * @deprecated since Symfony 7.4
+     */
     public function bar(array $value = []): \Symfony\Config\ArrayExtraKeys\BarConfig
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['bar'] = true;
 
         return $this->bar[] = new \Symfony\Config\ArrayExtraKeys\BarConfig($value);
     }
 
+    /**
+     * @deprecated since Symfony 7.4
+     */
     public function baz(array $value = []): \Symfony\Config\ArrayExtraKeys\BazConfig
     {
+        $this->_hasDeprecatedCalls = true;
         if (null === $this->baz) {
             $this->_usedProperties['baz'] = true;
             $this->baz = new \Symfony\Config\ArrayExtraKeys\BazConfig($value);
@@ -105,6 +118,9 @@ class ArrayExtraKeysConfig implements \Symfony\Component\Config\Builder\ConfigBu
         }
         if (isset($this->_usedProperties['baz'])) {
             $output['baz'] = $this->baz->toArray();
+        }
+        if ($this->_hasDeprecatedCalls) {
+            trigger_deprecation('symfony/config', '7.4', 'Calling any fluent method on "%s" is deprecated; pass the configuration to the constructor instead.', $this::class);
         }
 
         return $output;

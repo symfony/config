@@ -44,7 +44,7 @@ class TranslatorConfig
     /**
      * looks for translation in old fashion way
      * @deprecated Since symfony/config 6.0: The child node "books" at path "add_to_list.translator" is deprecated.
-    */
+     */
     public function books(array $value = []): \Symfony\Config\AddToList\Translator\BooksConfig
     {
         if (null === $this->books) {

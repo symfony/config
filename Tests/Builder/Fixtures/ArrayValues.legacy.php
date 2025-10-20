@@ -9,8 +9,11 @@
  * file that was distributed with this source code.
  */
 
-use Symfony\Config\VariableTypeConfig;
+use Symfony\Config\ArrayValuesConfig;
 
-return new VariableTypeConfig([
-    'any_value' => 'foobar',
-]);
+return static function (ArrayValuesConfig $config) {
+    $config->transports('foo')->dsn('bar');
+    $config->transports('bar', ['dsn' => 'foobar']);
+
+    $config->errorPages()->withTrace(false);
+};

@@ -38,6 +38,7 @@ class ClassBuilder
         private string $namespace,
         string $name,
         private NodeInterface $node,
+        public readonly bool $isRoot = false,
     ) {
         $this->name = ucfirst($this->camelCase($name)).'Config';
     }
@@ -73,7 +74,7 @@ class ClassBuilder
             $use .= \sprintf('use %s;', $statement)."\n";
         }
 
-        $implements = [] === $this->implements ? '' : 'implements '.implode(', ', $this->implements);
+        $implements = $this->implements ? 'implements '.implode(', ', $this->implements) : '';
         $body = '';
         foreach ($this->properties as $property) {
             $body .= '    '.$property->getContent()."\n";

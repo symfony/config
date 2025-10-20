@@ -22,14 +22,17 @@ class ScalarNormalizedTypesConfig implements \Symfony\Component\Config\Builder\C
     private $keyedListObject;
     private $nested;
     private $_usedProperties = [];
+    private $_hasDeprecatedCalls = false;
 
     /**
      * @param ParamConfigurator|list<ParamConfigurator|mixed>|string $value
      *
      * @return $this
+     * @deprecated since Symfony 7.4
      */
     public function simpleArray(ParamConfigurator|string|array $value): static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['simpleArray'] = true;
         $this->simpleArray = $value;
 
@@ -38,9 +41,11 @@ class ScalarNormalizedTypesConfig implements \Symfony\Component\Config\Builder\C
 
     /**
      * @return $this
+     * @deprecated since Symfony 7.4
      */
     public function keyedArray(string $name, ParamConfigurator|string|array $value): static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['keyedArray'] = true;
         $this->keyedArray[$name] = $value;
 
@@ -53,9 +58,11 @@ class ScalarNormalizedTypesConfig implements \Symfony\Component\Config\Builder\C
      * @default {"enabled":null}
      * @return \Symfony\Config\ScalarNormalizedTypes\ObjectConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\ScalarNormalizedTypes\ObjectConfig : static)
+     * @deprecated since Symfony 7.4
      */
     public function object(mixed $value = []): \Symfony\Config\ScalarNormalizedTypes\ObjectConfig|static
     {
+        $this->_hasDeprecatedCalls = true;
         if (!\is_array($value)) {
             $this->_usedProperties['object'] = true;
             $this->object = $value;
@@ -78,9 +85,11 @@ class ScalarNormalizedTypesConfig implements \Symfony\Component\Config\Builder\C
      * @param TValue $value
      * @return \Symfony\Config\ScalarNormalizedTypes\ListObjectConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\ScalarNormalizedTypes\ListObjectConfig : static)
+     * @deprecated since Symfony 7.4
      */
     public function listObject(mixed $value = []): \Symfony\Config\ScalarNormalizedTypes\ListObjectConfig|static
     {
+        $this->_hasDeprecatedCalls = true;
         $this->_usedProperties['listObject'] = true;
         if (!\is_array($value)) {
             $this->listObject[] = $value;
@@ -96,9 +105,11 @@ class ScalarNormalizedTypesConfig implements \Symfony\Component\Config\Builder\C
      * @param TValue $value
      * @return \Symfony\Config\ScalarNormalizedTypes\KeyedListObjectConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\ScalarNormalizedTypes\KeyedListObjectConfig : static)
+     * @deprecated since Symfony 7.4
      */
     public function keyedListObject(string $class, mixed $value = []): \Symfony\Config\ScalarNormalizedTypes\KeyedListObjectConfig|static
     {
+        $this->_hasDeprecatedCalls = true;
         if (!\is_array($value)) {
             $this->_usedProperties['keyedListObject'] = true;
             $this->keyedListObject[$class] = $value;
@@ -116,8 +127,12 @@ class ScalarNormalizedTypesConfig implements \Symfony\Component\Config\Builder\C
         return $this->keyedListObject[$class];
     }
 
+    /**
+     * @deprecated since Symfony 7.4
+     */
     public function nested(array $value = []): \Symfony\Config\ScalarNormalizedTypes\NestedConfig
     {
+        $this->_hasDeprecatedCalls = true;
         if (null === $this->nested) {
             $this->_usedProperties['nested'] = true;
             $this->nested = new \Symfony\Config\ScalarNormalizedTypes\NestedConfig($value);
@@ -223,6 +238,9 @@ class ScalarNormalizedTypesConfig implements \Symfony\Component\Config\Builder\C
         }
         if (isset($this->_usedProperties['nested'])) {
             $output['nested'] = $this->nested->toArray();
+        }
+        if ($this->_hasDeprecatedCalls) {
+            trigger_deprecation('symfony/config', '7.4', 'Calling any fluent method on "%s" is deprecated; pass the configuration to the constructor instead.', $this::class);
         }
 
         return $output;

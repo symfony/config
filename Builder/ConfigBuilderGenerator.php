@@ -51,7 +51,7 @@ class ConfigBuilderGenerator implements ConfigBuilderGeneratorInterface
         $this->classes = [];
 
         $rootNode = $configuration->getConfigTreeBuilder()->buildTree();
-        $rootClass = new ClassBuilder('Symfony\\Config', $rootNode->getName(), $rootNode);
+        $rootClass = new ClassBuilder('Symfony\\Config', $rootNode->getName(), $rootNode, true);
 
         $path = $this->getFullPath($rootClass);
         if (!is_file($path)) {
@@ -68,7 +68,7 @@ public function NAME(): string
             $this->writeClasses();
         }
 
-        return function () use ($path, $rootClass) {
+        return static function () use ($path, $rootClass) {
             require_once $path;
             $className = $rootClass->getFqcn();
 
@@ -93,6 +93,9 @@ public function NAME(): string
             $this->buildToArray($class);
             if ($class->getProperties()) {
                 $class->addProperty('_usedProperties', null, '[]');
+            }
+            if ($class->isRoot) {
+                $class->addProperty('_hasDeprecatedCalls', null, 'false');
             }
             $this->buildSetExtraKey($class);
 
@@ -134,10 +137,13 @@ public function NAME(): string
         if ($acceptScalar) {
             $comment = \sprintf(" * @template TValue of %s\n * @param TValue \$value\n%s", $paramType, $comment);
             $comment .= \sprintf(' * @return %s|$this'."\n", $childClass->getFqcn());
-            $comment .= \sprintf(' * @psalm-return (TValue is array ? %s : static)'."\n ", $childClass->getFqcn());
+            $comment .= \sprintf(' * @psalm-return (TValue is array ? %s : static)'."\n", $childClass->getFqcn());
+        }
+        if ($class->isRoot) {
+            $comment .= " * @deprecated since Symfony 7.4\n";
         }
         if ('' !== $comment) {
-            $comment = "/**\n$comment*/\n";
+            $comment = "/**\n$comment */\n";
         }
 
         $property = $class->addProperty(
@@ -146,7 +152,7 @@ public function NAME(): string
         );
         $body = $acceptScalar ? '
 COMMENTpublic function NAME(PARAM_TYPE $value = []): CLASS|static
-{
+{DEPRECATED_BODY
     if (!\is_array($value)) {
         $this->_usedProperties[\'PROPERTY\'] = true;
         $this->PROPERTY = $value;
@@ -164,7 +170,7 @@ COMMENTpublic function NAME(PARAM_TYPE $value = []): CLASS|static
     return $this->PROPERTY;
 }' : '
 COMMENTpublic function NAME(array $value = []): CLASS
-{
+{DEPRECATED_BODY
     if (null === $this->PROPERTY) {
         $this->_usedProperties[\'PROPERTY\'] = true;
         $this->PROPERTY = new CLASS($value);
@@ -176,6 +182,7 @@ COMMENTpublic function NAME(array $value = []): CLASS
 }';
         $class->addUse(InvalidConfigurationException::class);
         $class->addMethod($node->getName(), $body, [
+            'DEPRECATED_BODY' => $class->isRoot ? "\n    \$this->_hasDeprecatedCalls = true;" : '',
             'COMMENT' => $comment,
             'PROPERTY' => $property->getName(),
             'CLASS' => $childClass->getFqcn(),
@@ -195,15 +202,17 @@ COMMENTpublic function NAME(array $value = []): CLASS
 /**
 COMMENT *
  * @return $this
- */
+ *DEPRECATED_ANNOTATION/
 public function NAME(mixed $valueDEFAULT): static
-{
+{DEPRECATED_BODY
     $this->_usedProperties[\'PROPERTY\'] = true;
     $this->PROPERTY = $value;
 
     return $this;
 }';
         $class->addMethod($node->getName(), $body, [
+            'DEPRECATED_BODY' => $class->isRoot ? "\n    \$this->_hasDeprecatedCalls = true;" : '',
+            'DEPRECATED_ANNOTATION' => $class->isRoot ? " @deprecated since Symfony 7.4\n *" : '',
             'PROPERTY' => $property->getName(),
             'COMMENT' => $comment,
             'DEFAULT' => $node->hasDefaultValue() ? ' = '.var_export($node->getDefaultValue(), true) : '',
@@ -232,9 +241,9 @@ public function NAME(mixed $valueDEFAULT): static
  * @param ParamConfigurator|list<ParamConfigurator|PROTOTYPE_TYPE>EXTRA_TYPE $value
  *
  * @return $this
- */
+ *DEPRECATED_ANNOTATION/
 public function NAME(PARAM_TYPE $value): static
-{
+{DEPRECATED_BODY
     $this->_usedProperties[\'PROPERTY\'] = true;
     $this->PROPERTY = $value;
 
@@ -242,6 +251,8 @@ public function NAME(PARAM_TYPE $value): static
 }';
 
                 $class->addMethod($node->getName(), $body, [
+                    'DEPRECATED_BODY' => $class->isRoot ? "\n    \$this->_hasDeprecatedCalls = true;" : '',
+                    'DEPRECATED_ANNOTATION' => $class->isRoot ? " @deprecated since Symfony 7.4\n *" : '',
                     'PROPERTY' => $property->getName(),
                     'PROTOTYPE_TYPE' => implode('|', $prototypeParameterTypes),
                     'EXTRA_TYPE' => $nodeTypesWithoutArray ? '|'.implode('|', $nodeTypesWithoutArray) : '',
@@ -251,9 +262,9 @@ public function NAME(PARAM_TYPE $value): static
                 $body = '
 /**
  * @return $this
- */
+ *DEPRECATED_ANNOTATION/
 public function NAME(string $VAR, TYPE $VALUE): static
-{
+{DEPRECATED_BODY
     $this->_usedProperties[\'PROPERTY\'] = true;
     $this->PROPERTY[$VAR] = $VALUE;
 
@@ -261,6 +272,8 @@ public function NAME(string $VAR, TYPE $VALUE): static
 }';
 
                 $class->addMethod($methodName, $body, [
+                    'DEPRECATED_BODY' => $class->isRoot ? "\n    \$this->_hasDeprecatedCalls = true;" : '',
+                    'DEPRECATED_ANNOTATION' => $class->isRoot ? " @deprecated since Symfony 7.4\n *" : '',
                     'PROPERTY' => $property->getName(),
                     'TYPE' => ['mixed'] !== $prototypeParameterTypes ? 'ParamConfigurator|'.implode('|', $prototypeParameterTypes) : 'mixed',
                     'VAR' => '' === $key ? 'key' : $key,
@@ -290,16 +303,19 @@ public function NAME(string $VAR, TYPE $VALUE): static
         if ($acceptScalar) {
             $comment = \sprintf(" * @template TValue of %s\n * @param TValue \$value\n%s", $paramType, $comment);
             $comment .= \sprintf(' * @return %s|$this'."\n", $childClass->getFqcn());
-            $comment .= \sprintf(' * @psalm-return (TValue is array ? %s : static)'."\n ", $childClass->getFqcn());
+            $comment .= \sprintf(' * @psalm-return (TValue is array ? %s : static)'."\n", $childClass->getFqcn());
+        }
+        if ($class->isRoot) {
+            $comment .= " * @deprecated since Symfony 7.4\n";
         }
         if ('' !== $comment) {
-            $comment = "/**\n$comment*/\n";
+            $comment = "/**\n$comment */\n";
         }
 
         if ($noKey) {
             $body = $acceptScalar ? '
 COMMENTpublic function NAME(PARAM_TYPE $value = []): CLASS|static
-{
+{DEPRECATED_BODY
     $this->_usedProperties[\'PROPERTY\'] = true;
     if (!\is_array($value)) {
         $this->PROPERTY[] = $value;
@@ -310,12 +326,13 @@ COMMENTpublic function NAME(PARAM_TYPE $value = []): CLASS|static
     return $this->PROPERTY[] = new CLASS($value);
 }' : '
 COMMENTpublic function NAME(array $value = []): CLASS
-{
+{DEPRECATED_BODY
     $this->_usedProperties[\'PROPERTY\'] = true;
 
     return $this->PROPERTY[] = new CLASS($value);
 }';
             $class->addMethod($methodName, $body, [
+                'DEPRECATED_BODY' => $class->isRoot ? "\n    \$this->_hasDeprecatedCalls = true;" : '',
                 'COMMENT' => $comment,
                 'PROPERTY' => $property->getName(),
                 'CLASS' => $childClass->getFqcn(),
@@ -324,7 +341,7 @@ COMMENTpublic function NAME(array $value = []): CLASS
         } else {
             $body = $acceptScalar ? '
 COMMENTpublic function NAME(string $VAR, PARAM_TYPE $VALUE = []): CLASS|static
-{
+{DEPRECATED_BODY
     if (!\is_array($VALUE)) {
         $this->_usedProperties[\'PROPERTY\'] = true;
         $this->PROPERTY[$VAR] = $VALUE;
@@ -342,7 +359,7 @@ COMMENTpublic function NAME(string $VAR, PARAM_TYPE $VALUE = []): CLASS|static
     return $this->PROPERTY[$VAR];
 }' : '
 COMMENTpublic function NAME(string $VAR, array $VALUE = []): CLASS
-{
+{DEPRECATED_BODY
     if (!isset($this->PROPERTY[$VAR])) {
         $this->_usedProperties[\'PROPERTY\'] = true;
         $this->PROPERTY[$VAR] = new CLASS($VALUE);
@@ -354,7 +371,9 @@ COMMENTpublic function NAME(string $VAR, array $VALUE = []): CLASS
 }';
             $class->addUse(InvalidConfigurationException::class);
             $class->addMethod($methodName, str_replace('$value', '$VAR', $body), [
-                'COMMENT' => $comment, 'PROPERTY' => $property->getName(),
+                'DEPRECATED_BODY' => $class->isRoot ? "\n    \$this->_hasDeprecatedCalls = true;" : '',
+                'COMMENT' => $comment,
+                'PROPERTY' => $property->getName(),
                 'CLASS' => $childClass->getFqcn(),
                 'VAR' => '' === $key ? 'key' : $key,
                 'VALUE' => 'value' === $key ? 'data' : 'value',
@@ -374,16 +393,21 @@ COMMENTpublic function NAME(string $VAR, array $VALUE = []): CLASS
         $body = '
 /**
 COMMENT * @return $this
- */
+ *DEPRECATED_ANNOTATION/
 public function NAME($value): static
-{
+{DEPRECATED_BODY
     $this->_usedProperties[\'PROPERTY\'] = true;
     $this->PROPERTY = $value;
 
     return $this;
 }';
 
-        $class->addMethod($node->getName(), $body, ['PROPERTY' => $property->getName(), 'COMMENT' => $comment]);
+        $class->addMethod($node->getName(), $body, [
+            'DEPRECATED_BODY' => $class->isRoot ? "\n    \$this->_hasDeprecatedCalls = true;" : '',
+            'DEPRECATED_ANNOTATION' => $class->isRoot ? " @deprecated since Symfony 7.4\n *" : '',
+            'PROPERTY' => $property->getName(),
+            'COMMENT' => $comment,
+        ]);
     }
 
     private function getParameterTypes(NodeInterface $node): array
@@ -509,6 +533,13 @@ public function NAME($value): static
 
         $extraKeys = $class->shouldAllowExtraKeys() ? ' + $this->_extraKeys' : '';
 
+        if ($class->isRoot) {
+            $body .= "
+    if (\$this->_hasDeprecatedCalls) {
+        trigger_deprecation('symfony/config', '7.4', 'Calling any fluent method on \"%s\" is deprecated; pass the configuration to the constructor instead.', \$this::class);
+    }";
+        }
+
         $class->addMethod('toArray', '
 public function NAME(): array
 {
@@ -583,13 +614,16 @@ public function __construct(array $config = [])
  * @param ParamConfigurator|mixed $value
  *
  * @return $this
- */
+ *DEPRECATED_ANNOTATION/
 public function NAME(string $key, mixed $value): static
-{
+{DEPRECATED_BODY
     $this->_extraKeys[$key] = $value;
 
     return $this;
-}');
+}', [
+            'DEPRECATED_BODY' => $class->isRoot ? "\n    \$this->_hasDeprecatedCalls = true;" : '',
+            'DEPRECATED_ANNOTATION' => $class->isRoot ? " @deprecated since Symfony 7.4\n *" : '',
+        ]);
     }
 
     private function getSubNamespace(ClassBuilder $rootClass): string
