@@ -8,6 +8,7 @@ CHANGELOG
  * Add argument `$singular` to `NodeBuilder::arrayNode()`
  * Add argument `$info` to `ArrayNodeDefinition::canBeDisabled()` and `canBeEnabled()`
  * Ensure configuration nodes do not have both `isRequired()` and `defaultValue()`
+ * Remove generation of fluent methods in config builders
 
 7.4
 ---
