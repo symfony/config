@@ -42,7 +42,7 @@ final class ArrayShapeGenerator
                 $node instanceof BooleanNode => $node->hasDefaultValue() && null === $node->getDefaultValue() ? 'bool|null' : 'bool',
                 $node instanceof StringNode => 'string',
                 $node instanceof NumericNode => self::handleNumericNode($node),
-                $node instanceof EnumNode => $node->getPermissibleValues('|'),
+                $node instanceof EnumNode => $node->getPermissibleValues('|', false),
                 $node instanceof ScalarNode => 'scalar|null',
                 default => 'mixed',
             };
