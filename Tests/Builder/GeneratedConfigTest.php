@@ -86,10 +86,11 @@ class GeneratedConfigTest extends TestCase
         $expectedOutput = include $basePath.$name.'.output.php';
         $expectedCode = $basePath.$name;
 
-        // to regenerate snapshot files, uncomment these lines
-        // (new Filesystem())->remove($expectedCode);
-        // $this->generateConfigBuilder('Symfony\\Component\\Config\\Tests\\Builder\\Fixtures\\'.$name, $expectedCode);
-        // $this->markTestIncomplete('Re-comment the line above and relaunch the tests');
+        if ($_ENV['TEST_GENERATE_FIXTURES'] ?? false) {
+            (new Filesystem())->remove($expectedCode);
+            $this->generateConfigBuilder('Symfony\\Component\\Config\\Tests\\Builder\\Fixtures\\'.$name, $expectedCode);
+            $this->markTestIncomplete('TEST_GENERATE_FIXTURES is set');
+        }
 
         $this->generateConfigBuilder('Symfony\\Component\\Config\\Tests\\Builder\\Fixtures\\'.$name, $outputDir);
 
