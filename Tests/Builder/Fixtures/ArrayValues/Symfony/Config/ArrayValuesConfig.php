@@ -81,11 +81,11 @@ class ArrayValuesConfig implements \Symfony\Component\Config\Builder\ConfigBuild
      * @param array{
      *     transports?: array<string, array{
      *         dsn?: scalar|null,
-     *     }>,
+     *     }|string>,
      *     error_pages?: array{ // Default: {"enabled":false}
      *         enabled?: bool, // Default: false
      *         with_trace?: bool,
-     *     },
+     *     }|bool,
      * } $config
      */
     public function __construct(array $config = [])

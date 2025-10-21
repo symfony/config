@@ -151,7 +151,7 @@ class ScalarNormalizedTypesConfig implements \Symfony\Component\Config\Builder\C
     /**
      * @param array{
      *     simple_array?: list<scalar|null>,
-     *     keyed_array?: array<string, list<scalar|null>>,
+     *     keyed_array?: array<string, list<scalar|null>|string>,
      *     object?: array{ // Default: {"enabled":null}
      *         enabled?: bool|null, // Default: null
      *         date_format?: scalar|null,

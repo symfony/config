@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Builder\ArrayShapeGenerator;
 use Symfony\Component\Config\Definition\ArrayNode;
 use Symfony\Component\Config\Definition\BooleanNode;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\EnumNode;
 use Symfony\Component\Config\Definition\FloatNode;
 use Symfony\Component\Config\Definition\IntegerNode;
@@ -145,6 +146,30 @@ class ArrayShapeGeneratorTest extends TestCase
         $root->addChild($child);
 
         $this->assertStringMatchesFormat('array{%Achild?: array<%s>,%A}', ArrayShapeGenerator::generate($root));
+    }
+
+    public function testCanBeEnabled()
+    {
+        $root = new ArrayNodeDefinition('root');
+        $root->canBeEnabled();
+
+        $this->assertSame(<<<'CODE'
+            array{ // Default: {"enabled":false}
+             *     enabled?: bool, // Default: false
+             * }|bool
+            CODE, ArrayShapeGenerator::generate($root->getNode()));
+    }
+
+    public function testCanBeDisabled()
+    {
+        $root = new ArrayNodeDefinition('root');
+        $root->canBeDisabled();
+
+        $this->assertSame(<<<'CODE'
+            array{ // Default: {"enabled":true}
+             *     enabled?: bool, // Default: true
+             * }|bool
+            CODE, ArrayShapeGenerator::generate($root->getNode()));
     }
 
     #[DataProvider('provideQuotedNodes')]
