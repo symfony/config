@@ -40,13 +40,6 @@ class FooConfig
         return $this;
     }
 
-    /**
-     * @param array{
-     *     baz?: scalar|null,
-     *     qux?: scalar|null,
-     *     ...<mixed>
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('baz', $config)) {

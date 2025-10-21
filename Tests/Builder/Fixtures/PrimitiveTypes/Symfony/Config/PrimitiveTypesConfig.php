@@ -146,18 +146,6 @@ class PrimitiveTypesConfig implements \Symfony\Component\Config\Builder\ConfigBu
         return 'primitive_types';
     }
 
-    /**
-     * @param array{
-     *     boolean_node?: bool,
-     *     enum_node?: "foo"|"bar"|"baz"|\Symfony\Component\Config\Tests\Fixtures\TestEnum::Bar,
-     *     fqcn_enum_node?: foo|bar,
-     *     fqcn_unit_enum_node?: \Symfony\Component\Config\Tests\Fixtures\TestEnum::Foo|\Symfony\Component\Config\Tests\Fixtures\TestEnum::Bar|\Symfony\Component\Config\Tests\Fixtures\TestEnum::Ccc,
-     *     float_node?: float,
-     *     integer_node?: int<min, max>,
-     *     scalar_node?: scalar|null,
-     *     scalar_node_with_default?: scalar|null, // Default: true
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('boolean_node', $config)) {

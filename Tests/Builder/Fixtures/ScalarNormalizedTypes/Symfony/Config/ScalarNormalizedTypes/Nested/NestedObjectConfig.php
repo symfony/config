@@ -26,11 +26,6 @@ class NestedObjectConfig
         return $this;
     }
 
-    /**
-     * @param array{ // Default: {"enabled":null}
-     *     enabled?: bool|null, // Default: null
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('enabled', $config)) {

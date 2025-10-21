@@ -54,13 +54,6 @@ class SomeCleverNameConfig
         return $this;
     }
 
-    /**
-     * @param array{
-     *     first?: scalar|null,
-     *     second?: scalar|null,
-     *     third?: scalar|null,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('first', $config)) {

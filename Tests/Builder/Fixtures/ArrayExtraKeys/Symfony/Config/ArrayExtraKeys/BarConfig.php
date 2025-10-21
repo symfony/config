@@ -40,13 +40,6 @@ class BarConfig
         return $this;
     }
 
-    /**
-     * @param array{
-     *     corge?: scalar|null,
-     *     grault?: scalar|null,
-     *     ...<mixed>
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('corge', $config)) {

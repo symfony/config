@@ -54,13 +54,6 @@ class ObjectConfig
         return $this;
     }
 
-    /**
-     * @param array{ // Default: {"enabled":null}
-     *     enabled?: bool|null, // Default: null
-     *     date_format?: scalar|null,
-     *     remove_used_context_fields?: bool,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('enabled', $config)) {

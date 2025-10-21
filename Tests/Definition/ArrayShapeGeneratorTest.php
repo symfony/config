@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Config\Tests\Builder;
+namespace Symfony\Component\Config\Tests\Definition;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Config\Builder\ArrayShapeGenerator;
 use Symfony\Component\Config\Definition\ArrayNode;
+use Symfony\Component\Config\Definition\ArrayShapeGenerator;
 use Symfony\Component\Config\Definition\BooleanNode;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\EnumNode;
@@ -55,10 +55,10 @@ class ArrayShapeGeneratorTest extends TestCase
         yield [new ScalarNode('node'), 'scalar|null'];
         yield [new VariableNode('node'), 'mixed'];
 
-        yield [new IntegerNode('node'), 'int<min, max>'];
-        yield [new IntegerNode('node', min: 1), 'int<1, max>'];
-        yield [new IntegerNode('node', max: 10), 'int<min, 10>'];
-        yield [new IntegerNode('node', min: 1, max: 10), 'int<1, 10>'];
+        yield [new IntegerNode('node'), 'int'];
+        yield [new IntegerNode('node', min: 1), 'int'];
+        yield [new IntegerNode('node', max: 10), 'int'];
+        yield [new IntegerNode('node', min: 1, max: 10), 'int'];
 
         yield [new FloatNode('node'), 'float'];
         yield [new FloatNode('node', min: 1.1), 'float'];
@@ -154,9 +154,9 @@ class ArrayShapeGeneratorTest extends TestCase
         $root->canBeEnabled();
 
         $this->assertSame(<<<'CODE'
-            array{ // Default: {"enabled":false}
+            bool|array{
              *     enabled?: bool, // Default: false
-             * }|bool
+             * }
             CODE, ArrayShapeGenerator::generate($root->getNode()));
     }
 
@@ -166,9 +166,9 @@ class ArrayShapeGeneratorTest extends TestCase
         $root->canBeDisabled();
 
         $this->assertSame(<<<'CODE'
-            array{ // Default: {"enabled":true}
+            bool|array{
              *     enabled?: bool, // Default: true
-             * }|bool
+             * }
             CODE, ArrayShapeGenerator::generate($root->getNode()));
     }
 

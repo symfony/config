@@ -35,17 +35,6 @@ class MessengerConfig
         return $this->receiving[] = new \Symfony\Config\AddToList\Messenger\ReceivingConfig($value);
     }
 
-    /**
-     * @param array{
-     *     routing?: array<string, array{
-     *         senders?: list<scalar|null>,
-     *     }>,
-     *     receiving?: list<array{
-     *         priority?: int<min, max>,
-     *         color?: scalar|null,
-     *     }>,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('routing', $config)) {

@@ -40,12 +40,6 @@ class KeyedListObjectConfig
         return $this;
     }
 
-    /**
-     * @param array{
-     *     enabled?: bool, // Default: true
-     *     settings?: list<scalar|null>,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('enabled', $config)) {

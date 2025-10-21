@@ -40,12 +40,6 @@ class PageConfig
         return $this;
     }
 
-    /**
-     * @param array{
-     *     number?: int<min, max>,
-     *     content?: scalar|null,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('number', $config)) {

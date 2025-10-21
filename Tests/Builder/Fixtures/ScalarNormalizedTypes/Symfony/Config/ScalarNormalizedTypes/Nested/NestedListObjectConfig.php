@@ -26,11 +26,6 @@ class NestedListObjectConfig
         return $this;
     }
 
-    /**
-     * @param array{
-     *     name: scalar|null,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('name', $config)) {
