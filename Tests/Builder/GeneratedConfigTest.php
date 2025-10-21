@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\Config\Tests\Builder;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
@@ -19,8 +18,6 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Builder\ClassBuilder;
 use Symfony\Component\Config\Builder\ConfigBuilderGenerator;
 use Symfony\Component\Config\Builder\ConfigBuilderInterface;
-use Symfony\Component\Config\Builder\Method;
-use Symfony\Component\Config\Builder\Property;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Tests\Builder\Fixtures\AddToList;
 use Symfony\Component\Config\Tests\Builder\Fixtures\NodeInitialValues;
@@ -35,10 +32,8 @@ use Symfony\Config\AddToListConfig;
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-#[CoversClass(ClassBuilder::class)]
-#[CoversClass(ConfigBuilderGenerator::class)]
-#[CoversClass(Method::class)]
-#[CoversClass(Property::class)]
+#[IgnoreDeprecations]
+#[Group('legacy')]
 class GeneratedConfigTest extends TestCase
 {
     private array $tempDir = [];
