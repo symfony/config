@@ -52,7 +52,7 @@ final class ArrayShapeGenerator
             $isHashmap = (bool) $node->getKeyAttribute();
             $arrayType = ($isHashmap ? 'array<string, ' : 'list<').self::doGeneratePhpDoc($node->getPrototype(), 1 + $nestingLevel).'>';
 
-            return $node->hasDefaultValue() && null === $node->getDefaultValue() ? $arrayType.'|null' : $arrayType;
+            return implode('|', [$arrayType, ...self::getNormalizedTypes($node, ['array', 'any'])]);
         }
 
         if (!($children = $node->getChildren()) && !$node->getParent() instanceof PrototypedArrayNode) {
@@ -81,7 +81,7 @@ final class ArrayShapeGenerator
 
         $arrayShape = $arrayShape.str_repeat('    ', $nestingLevel - 1).'}';
 
-        return $node->hasDefaultValue() && null === $node->getDefaultValue() ? $arrayShape.'|null' : $arrayShape;
+        return implode('|', [$arrayShape, ...self::getNormalizedTypes($node, ['array', 'any'])]);
     }
 
     private static function dumpNodeKey(NodeInterface $node): string
@@ -129,5 +129,21 @@ final class ArrayShapeGenerator
         }
 
         return rtrim(preg_replace('/\s+/', ' ', $comment));
+    }
+
+    /** @return list<string> */
+    private static function getNormalizedTypes(BaseNode $node, array $excluded = []): array
+    {
+        $types = array_diff($node->getNormalizedTypes(), $excluded);
+
+        if ($node->hasDefaultValue() && null === $node->getDefaultValue()) {
+            $types[] = 'null';
+        }
+
+        $types = array_unique($types);
+
+        sort($types);
+
+        return $types;
     }
 }

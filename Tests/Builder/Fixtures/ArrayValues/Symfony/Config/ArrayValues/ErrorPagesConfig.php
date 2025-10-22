@@ -44,7 +44,7 @@ class ErrorPagesConfig
      * @param array{ // Default: {"enabled":false}
      *     enabled?: bool, // Default: false
      *     with_trace?: bool,
-     * } $config
+     * }|bool $config
      */
     public function __construct(array $config = [])
     {

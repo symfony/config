@@ -29,7 +29,7 @@ class TransportsConfig
     /**
      * @param array{
      *     dsn?: scalar|null,
-     * } $config
+     * }|string $config
      */
     public function __construct(array $config = [])
     {
