@@ -60,16 +60,6 @@ class NestedConfig
         return $this->nestedListObject[] = new \Symfony\Config\ScalarNormalizedTypes\Nested\NestedListObjectConfig($value);
     }
 
-    /**
-     * @param array{
-     *     nested_object?: array{ // Default: {"enabled":null}
-     *         enabled?: bool|null, // Default: null
-     *     },
-     *     nested_list_object?: list<array{
-     *         name: scalar|null,
-     *     }>,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('nested_object', $config)) {

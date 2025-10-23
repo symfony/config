@@ -35,11 +35,6 @@ class VariableTypeConfig implements \Symfony\Component\Config\Builder\ConfigBuil
         return 'variable_type';
     }
 
-    /**
-     * @param array{
-     *     any_value?: mixed,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('any_value', $config)) {

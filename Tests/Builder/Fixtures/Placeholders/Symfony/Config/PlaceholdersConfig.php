@@ -66,13 +66,6 @@ class PlaceholdersConfig implements \Symfony\Component\Config\Builder\ConfigBuil
         return 'placeholders';
     }
 
-    /**
-     * @param array{
-     *     enabled?: bool, // Default: false
-     *     favorite_float?: float,
-     *     good_integers?: list<int<min, max>>,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('enabled', $config)) {

@@ -67,21 +67,6 @@ class ArrayExtraKeysConfig implements \Symfony\Component\Config\Builder\ConfigBu
         return 'array_extra_keys';
     }
 
-    /**
-     * @param array{
-     *     foo?: array{
-     *         baz?: scalar|null,
-     *         qux?: scalar|null,
-     *         ...<mixed>
-     *     },
-     *     bar?: list<array{
-     *         corge?: scalar|null,
-     *         grault?: scalar|null,
-     *         ...<mixed>
-     *     }>,
-     *     baz?: array<mixed>,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('foo', $config)) {

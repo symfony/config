@@ -40,12 +40,6 @@ class ReceivingConfig
         return $this;
     }
 
-    /**
-     * @param array{
-     *     priority?: int<min, max>,
-     *     color?: scalar|null,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('priority', $config)) {

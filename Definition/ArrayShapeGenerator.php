@@ -9,24 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Config\Builder;
-
-use Symfony\Component\Config\Definition\ArrayNode;
-use Symfony\Component\Config\Definition\BaseNode;
-use Symfony\Component\Config\Definition\BooleanNode;
-use Symfony\Component\Config\Definition\EnumNode;
-use Symfony\Component\Config\Definition\FloatNode;
-use Symfony\Component\Config\Definition\IntegerNode;
-use Symfony\Component\Config\Definition\NodeInterface;
-use Symfony\Component\Config\Definition\NumericNode;
-use Symfony\Component\Config\Definition\PrototypedArrayNode;
-use Symfony\Component\Config\Definition\ScalarNode;
-use Symfony\Component\Config\Definition\StringNode;
+namespace Symfony\Component\Config\Definition;
 
 /**
  * @author Alexandre Daubois <alex.daubois@gmail.com>
- *
- * @internal
  */
 final class ArrayShapeGenerator
 {
@@ -50,9 +36,9 @@ final class ArrayShapeGenerator
 
         if ($node instanceof PrototypedArrayNode) {
             $isHashmap = (bool) $node->getKeyAttribute();
-            $arrayType = ($isHashmap ? 'array<string, ' : 'list<').self::doGeneratePhpDoc($node->getPrototype(), 1 + $nestingLevel).'>';
+            $arrayShape = ($isHashmap ? 'array<string, ' : 'list<').self::doGeneratePhpDoc($node->getPrototype(), 1 + $nestingLevel).'>';
 
-            return implode('|', [$arrayType, ...self::getNormalizedTypes($node, ['array', 'any'])]);
+            return implode('|', [...self::getNormalizedTypes($node, ['array', 'any']), $arrayShape]);
         }
 
         if (!($children = $node->getChildren()) && !$node->getParent() instanceof PrototypedArrayNode) {
@@ -81,7 +67,7 @@ final class ArrayShapeGenerator
 
         $arrayShape = $arrayShape.str_repeat('    ', $nestingLevel - 1).'}';
 
-        return implode('|', [$arrayShape, ...self::getNormalizedTypes($node, ['array', 'any'])]);
+        return implode('|', [...self::getNormalizedTypes($node, ['array', 'any']), $arrayShape]);
     }
 
     private static function dumpNodeKey(NodeInterface $node): string
@@ -100,17 +86,18 @@ final class ArrayShapeGenerator
 
     private static function handleNumericNode(NumericNode $node): string
     {
-        $min = $node->getMin() ?? 'min';
-        $max = $node->getMax() ?? 'max';
+        // We could use int<%s, %s> but PhpStorm doesn't support it yet
+        // $min = $node->getMin() ?? 'min';
+        // $max = $node->getMax() ?? 'max';
 
         if ($node instanceof IntegerNode) {
-            return \sprintf('int<%s, %s>', $min, $max);
+            return 'int';
         }
         if ($node instanceof FloatNode) {
             return 'float';
         }
 
-        return \sprintf('int<%s, %s>|float', $min, $max);
+        return 'int|float';
     }
 
     private static function generateInlinePhpDocForNode(BaseNode $node): string
@@ -124,14 +111,16 @@ final class ArrayShapeGenerator
             $comment .= ' // '.$info;
         }
 
-        if ($node->hasDefaultValue()) {
+        if ((!$node instanceof ArrayNode || ($node = $node->getParent()) instanceof PrototypedArrayNode) && $node->hasDefaultValue()) {
             $comment .= ' // Default: '.json_encode($node->getDefaultValue(), \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE | \JSON_PRESERVE_ZERO_FRACTION);
         }
 
         return rtrim(preg_replace('/\s+/', ' ', $comment));
     }
 
-    /** @return list<string> */
+    /**
+     * @return list<string>
+     */
     private static function getNormalizedTypes(BaseNode $node, array $excluded = []): array
     {
         $types = array_diff($node->getNormalizedTypes(), $excluded);

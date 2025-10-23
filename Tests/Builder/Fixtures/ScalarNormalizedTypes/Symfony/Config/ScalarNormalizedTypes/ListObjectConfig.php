@@ -40,12 +40,6 @@ class ListObjectConfig
         return $this;
     }
 
-    /**
-     * @param array{
-     *     name: scalar|null,
-     *     data?: list<mixed>,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('name', $config)) {

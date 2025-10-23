@@ -25,14 +25,6 @@ class BooksConfig
         return $this->page[] = new \Symfony\Config\AddToList\Translator\Books\PageConfig($value);
     }
 
-    /**
-     * @param array{ // Deprecated: The child node "books" at path "add_to_list.translator.books" is deprecated. // looks for translation in old fashion way
-     *     page?: list<array{
-     *         number?: int<min, max>,
-     *         content?: scalar|null,
-     *     }>,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('page', $config)) {

@@ -77,17 +77,6 @@ class ArrayValuesConfig implements \Symfony\Component\Config\Builder\ConfigBuild
         return 'array_values';
     }
 
-    /**
-     * @param array{
-     *     transports?: array<string, array{
-     *         dsn?: scalar|null,
-     *     }|string>,
-     *     error_pages?: array{ // Default: {"enabled":false}
-     *         enabled?: bool, // Default: false
-     *         with_trace?: bool,
-     *     }|bool,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('transports', $config)) {

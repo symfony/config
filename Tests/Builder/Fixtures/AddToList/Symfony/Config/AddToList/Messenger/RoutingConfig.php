@@ -26,11 +26,6 @@ class RoutingConfig
         return $this;
     }
 
-    /**
-     * @param array{
-     *     senders?: list<scalar|null>,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('senders', $config)) {

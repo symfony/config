@@ -591,12 +591,9 @@ public function NAME(): array
         }
 
         $class->addMethod('__construct', '
-/**
- * @param PARAM_TYPE $config
- */
 public function __construct(array $config = [])
 {'.$body.'
-}', ['PARAM_TYPE' => ArrayShapeGenerator::generate($node)]);
+}');
     }
 
     private function buildSetExtraKey(ClassBuilder $class): void

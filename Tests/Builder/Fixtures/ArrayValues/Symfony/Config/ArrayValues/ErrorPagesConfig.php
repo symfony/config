@@ -40,12 +40,6 @@ class ErrorPagesConfig
         return $this;
     }
 
-    /**
-     * @param array{ // Default: {"enabled":false}
-     *     enabled?: bool, // Default: false
-     *     with_trace?: bool,
-     * }|bool $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('enabled', $config)) {

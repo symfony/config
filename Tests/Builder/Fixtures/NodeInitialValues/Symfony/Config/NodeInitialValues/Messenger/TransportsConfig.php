@@ -57,13 +57,6 @@ class TransportsConfig
         return $this;
     }
 
-    /**
-     * @param array{
-     *     dsn?: scalar|null, // The DSN to use. This is a required option. The info is used to describe the DSN, it can be multi-line.
-     *     serializer?: scalar|null, // Default: null
-     *     options?: list<mixed>,
-     * } $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('dsn', $config)) {

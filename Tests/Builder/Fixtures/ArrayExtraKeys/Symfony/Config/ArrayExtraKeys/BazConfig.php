@@ -11,9 +11,6 @@ class BazConfig
 {
     private $_extraKeys;
 
-    /**
-     * @param array<mixed> $config
-     */
     public function __construct(array $config = [])
     {
         $this->_extraKeys = $config;

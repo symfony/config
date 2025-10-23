@@ -26,11 +26,6 @@ class TransportsConfig
         return $this;
     }
 
-    /**
-     * @param array{
-     *     dsn?: scalar|null,
-     * }|string $config
-     */
     public function __construct(array $config = [])
     {
         if (array_key_exists('dsn', $config)) {
