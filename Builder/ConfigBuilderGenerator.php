@@ -30,6 +30,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator;
  * Generate ConfigBuilders to help create valid config.
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
+ *
+ * @deprecated since Symfony 7.4
  */
 class ConfigBuilderGenerator implements ConfigBuilderGeneratorInterface
 {
