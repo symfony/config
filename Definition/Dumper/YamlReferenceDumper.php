@@ -239,6 +239,6 @@ class YamlReferenceDumper
         }
         $keyNode->setInfo($info);
 
-        return [$key => $keyNode];
+        return [$key ?? '' => $keyNode];
     }
 }
