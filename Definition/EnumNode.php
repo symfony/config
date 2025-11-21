@@ -104,6 +104,10 @@ class EnumNode extends ScalarNode
     {
         $value = parent::finalizeValue($value);
 
+        if (null === $value && $this->enumFqcn) {
+            return null;
+        }
+
         if (!$this->enumFqcn) {
             if (!\in_array($value, $this->values, true)) {
                 throw $this->createInvalidValueException($value);
