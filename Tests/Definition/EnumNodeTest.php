@@ -222,4 +222,12 @@ class EnumNodeTest extends TestCase
 
         new EnumNode('ccc', null, [...TestEnum::cases(), TestEnum2::Ccc]);
     }
+
+    public function testFinalizeNullableBackedEnum()
+    {
+        $node = new EnumNode('status', null, enumFqcn: StringBackedTestEnum::class);
+        $node->setAllowEmptyValue(true); // Equivalent to ->defaultNull() in the builder
+
+        $this->assertNull($node->finalize(null));
+    }
 }
