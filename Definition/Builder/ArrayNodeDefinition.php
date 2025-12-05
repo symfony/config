@@ -19,7 +19,7 @@ use Symfony\Component\Config\Definition\PrototypedArrayNode;
 /**
  * This class provides a fluent interface for defining an array node.
  *
- * @template TParent of NodeParentInterface|null
+ * @template TParent of NodeParentInterface|null = null
  *
  * @extends NodeDefinition<TParent>
  *

@@ -138,7 +138,7 @@ class EnumNodeTest extends TestCase
         $node = new EnumNode('foo', null, enumFqcn: StringBackedTestEnum::class);
 
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage('The value "qux" is not allowed for path "foo". Permissible values: foo, bar (cases of the "Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum" enum)');
+        $this->expectExceptionMessage('The value "qux" is not allowed for path "foo". Permissible values: "foo", "bar baz" (cases of the "Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum" enum)');
 
         $node->finalize('qux');
     }
@@ -148,7 +148,7 @@ class EnumNodeTest extends TestCase
         $node = new EnumNode('foo', null, enumFqcn: StringBackedTestEnum::class);
 
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage('The value 1 is not allowed for path "foo". Permissible values: foo, bar (cases of the "Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum" enum).');
+        $this->expectExceptionMessage('The value 1 is not allowed for path "foo". Permissible values: "foo", "bar baz" (cases of the "Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum" enum).');
 
         $node->finalize(1);
     }
