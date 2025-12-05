@@ -53,7 +53,7 @@ class PrimitiveTypesConfig implements \Symfony\Component\Config\Builder\ConfigBu
 
     /**
      * @default null
-     * @param ParamConfigurator|\Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum::Foo|\Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum::Bar $value
+     * @param ParamConfigurator|\Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum::Foo|\Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum::BarBaz $value
      * @return $this
      * @deprecated since Symfony 7.4
      */

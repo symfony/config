@@ -25,6 +25,8 @@ use Symfony\Component\Config\Definition\PrototypedArrayNode;
 use Symfony\Component\Config\Definition\ScalarNode;
 use Symfony\Component\Config\Definition\StringNode;
 use Symfony\Component\Config\Definition\VariableNode;
+use Symfony\Component\Config\Tests\Fixtures\IntegerBackedTestEnum;
+use Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum;
 
 class ArrayShapeGeneratorTest extends TestCase
 {
@@ -52,6 +54,8 @@ class ArrayShapeGeneratorTest extends TestCase
 
         yield [$nullableBooleanNode, 'bool|null'];
         yield [new EnumNode('node', values: ['a', 'b']), '"a"|"b"'];
+        yield [new EnumNode('node', enumFqcn: StringBackedTestEnum::class), 'value-of<\Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum>|\Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum'];
+        yield [new EnumNode('node', enumFqcn: IntegerBackedTestEnum::class), 'value-of<\Symfony\Component\Config\Tests\Fixtures\IntegerBackedTestEnum>|\Symfony\Component\Config\Tests\Fixtures\IntegerBackedTestEnum'];
         yield [new ScalarNode('node'), 'scalar|null'];
         yield [new VariableNode('node'), 'mixed'];
 
