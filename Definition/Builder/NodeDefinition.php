@@ -19,7 +19,7 @@ use Symfony\Component\Config\Definition\NodeInterface;
 /**
  * This class provides a fluent interface for defining a node.
  *
- * @template TParent of NodeParentInterface|null
+ * @template TParent of NodeParentInterface|null = null
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */

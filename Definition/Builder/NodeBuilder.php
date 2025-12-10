@@ -14,7 +14,7 @@ namespace Symfony\Component\Config\Definition\Builder;
 /**
  * This class provides a fluent interface for building a node.
  *
- * @template TParent of (NodeDefinition&ParentNodeDefinitionInterface)|null
+ * @template TParent of (NodeDefinition&ParentNodeDefinitionInterface)|null = null
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
