@@ -245,7 +245,7 @@ class ArrayNodeTest extends TestCase
         $node->addChild($childNode);
 
         $deprecationTriggered = false;
-        $deprecationHandler = function ($level, $message, $file, $line) use (&$prevErrorHandler, &$deprecationTriggered) {
+        $deprecationHandler = static function ($level, $message, $file, $line) use (&$prevErrorHandler, &$deprecationTriggered) {
             if (\E_USER_DEPRECATED === $level) {
                 return $deprecationTriggered = true;
             }

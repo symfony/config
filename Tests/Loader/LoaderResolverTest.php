@@ -35,7 +35,7 @@ class LoaderResolverTest extends TestCase
         $loader = $this->createMock(LoaderInterface::class);
         $loader->expects($this->once())->method('supports')->willReturn(true);
         $resolver = new LoaderResolver([$loader]);
-        $this->assertEquals($loader, $resolver->resolve(function () {}), '->resolve() returns the loader for the given resource');
+        $this->assertEquals($loader, $resolver->resolve(static function () {}), '->resolve() returns the loader for the given resource');
     }
 
     public function testLoaders()
