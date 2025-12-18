@@ -24,7 +24,7 @@ final class ArrayShapeGenerator
     private static function doGeneratePhpDoc(NodeInterface $node, int $nestingLevel = 1): string
     {
         if (!$node instanceof ArrayNode) {
-            return match (true) {
+            $typeString = match (true) {
                 $node instanceof BooleanNode => $node->hasDefaultValue() && null === $node->getDefaultValue() ? 'bool|null' : 'bool',
                 $node instanceof StringNode => 'string',
                 $node instanceof NumericNode => self::handleNumericNode($node),
@@ -32,6 +32,11 @@ final class ArrayShapeGenerator
                 $node instanceof ScalarNode => 'scalar|null',
                 default => 'mixed',
             };
+            if ('mixed' !== $typeString) {
+                $typeString .= '|Param';
+            }
+
+            return $typeString;
         }
 
         if ($node instanceof PrototypedArrayNode) {
