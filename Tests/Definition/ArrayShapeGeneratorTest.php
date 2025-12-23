@@ -78,7 +78,7 @@ class ArrayShapeGeneratorTest extends TestCase
         $root = new ArrayNode('root');
         $root->addChild($prototype);
 
-        $expected = "array{\n *     proto?: list<string>,\n * }";
+        $expected = "array{\n *     proto?: list<string|Param>,\n * }";
 
         $this->assertStringContainsString($expected, ArrayShapeGenerator::generate($root));
     }
@@ -92,7 +92,7 @@ class ArrayShapeGeneratorTest extends TestCase
         $root = new ArrayNode('root');
         $root->addChild($prototype);
 
-        $expected = "array{\n *     proto?: array<string, string>,\n * }";
+        $expected = "array{\n *     proto?: array<string, string|Param>,\n * }";
 
         $this->assertStringContainsString($expected, ArrayShapeGenerator::generate($root));
     }
@@ -120,7 +120,7 @@ class ArrayShapeGeneratorTest extends TestCase
         $root = new ArrayNode('root');
         $root->addChild($child);
 
-        $this->assertStringContainsString('node?: bool, // Deprecated: The "node" option is deprecated. // This is a boolean node. // Default: true', ArrayShapeGenerator::generate($root));
+        $this->assertStringContainsString('node?: bool|Param, // Deprecated: The "node" option is deprecated. // This is a boolean node. // Default: true', ArrayShapeGenerator::generate($root));
     }
 
     public function testPhpDocHandleMultilineDoc()
@@ -133,7 +133,7 @@ class ArrayShapeGeneratorTest extends TestCase
         $root = new ArrayNode('root');
         $root->addChild($child);
 
-        $this->assertStringContainsString('node?: bool, // Deprecated: The "node" option is deprecated. // This is a boolean node. Set to true to enable it. Set to false to disable it. // Default: true', ArrayShapeGenerator::generate($root));
+        $this->assertStringContainsString('node?: bool|Param, // Deprecated: The "node" option is deprecated. // This is a boolean node. Set to true to enable it. Set to false to disable it. // Default: true', ArrayShapeGenerator::generate($root));
     }
 
     public function testPhpDocShapeSingleLevel()
@@ -159,7 +159,7 @@ class ArrayShapeGeneratorTest extends TestCase
 
         $this->assertSame(<<<'CODE'
             bool|array{
-             *     enabled?: bool, // Default: false
+             *     enabled?: bool|Param, // Default: false
              * }
             CODE, ArrayShapeGenerator::generate($root->getNode()));
     }
@@ -171,7 +171,7 @@ class ArrayShapeGeneratorTest extends TestCase
 
         $this->assertSame(<<<'CODE'
             bool|array{
-             *     enabled?: bool, // Default: true
+             *     enabled?: bool|Param, // Default: true
              * }
             CODE, ArrayShapeGenerator::generate($root->getNode()));
     }
