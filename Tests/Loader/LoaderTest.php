@@ -15,13 +15,14 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Exception\LoaderLoadException;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 
 class LoaderTest extends TestCase
 {
     public function testGetSetResolver()
     {
-        $resolver = $this->createMock(LoaderResolverInterface::class);
+        $resolver = new LoaderResolver([]);
 
         $loader = new ProjectLoader1();
         $loader->setResolver($resolver);
@@ -31,7 +32,7 @@ class LoaderTest extends TestCase
 
     public function testResolve()
     {
-        $resolvedLoader = $this->createMock(LoaderInterface::class);
+        $resolvedLoader = $this->createStub(LoaderInterface::class);
 
         $resolver = $this->createMock(LoaderResolverInterface::class);
         $resolver->expects($this->once())

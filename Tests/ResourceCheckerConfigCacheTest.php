@@ -119,7 +119,7 @@ class ResourceCheckerConfigCacheTest extends TestCase
 
     public function testCacheIsNotFreshWhenUnserializeFails()
     {
-        $checker = $this->createMock(ResourceCheckerInterface::class);
+        $checker = $this->createStub(ResourceCheckerInterface::class);
         $cache = new ResourceCheckerConfigCache($this->cacheFile, [$checker]);
         $cache->write('foo', [new FileResource(__FILE__)]);
 
@@ -139,7 +139,7 @@ class ResourceCheckerConfigCacheTest extends TestCase
 
     public function testCacheIsNotFreshIfNotExistsMetaFile()
     {
-        $checker = $this->createMock(ResourceCheckerInterface::class);
+        $checker = $this->createStub(ResourceCheckerInterface::class);
         $cache = new ResourceCheckerConfigCache($this->cacheFile, [$checker]);
         $cache->write('foo', [new FileResource(__FILE__)]);
 
