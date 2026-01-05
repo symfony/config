@@ -52,11 +52,11 @@ class ArrayShapeGeneratorTest extends TestCase
         $nullableBooleanNode = new BooleanNode('node');
         $nullableBooleanNode->setDefaultValue(null);
 
-        yield [$nullableBooleanNode, 'bool|null'];
+        yield [$nullableBooleanNode, 'bool|\Symfony\Component\Config\Loader\ParamConfigurator|null'];
         yield [new EnumNode('node', values: ['a', 'b']), '"a"|"b"'];
         yield [new EnumNode('node', enumFqcn: StringBackedTestEnum::class), 'value-of<\Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum>|\Symfony\Component\Config\Tests\Fixtures\StringBackedTestEnum'];
         yield [new EnumNode('node', enumFqcn: IntegerBackedTestEnum::class), 'value-of<\Symfony\Component\Config\Tests\Fixtures\IntegerBackedTestEnum>|\Symfony\Component\Config\Tests\Fixtures\IntegerBackedTestEnum'];
-        yield [new ScalarNode('node'), 'scalar|null'];
+        yield [new ScalarNode('node'), 'scalar|\Symfony\Component\Config\Loader\ParamConfigurator|null'];
         yield [new VariableNode('node'), 'mixed'];
 
         yield [new IntegerNode('node'), 'int'];
@@ -78,7 +78,7 @@ class ArrayShapeGeneratorTest extends TestCase
         $root = new ArrayNode('root');
         $root->addChild($prototype);
 
-        $expected = "array{\n *     proto?: list<string|Param>,\n * }";
+        $expected = "array{\n *     proto?: list<string|\Symfony\Component\Config\Loader\ParamConfigurator>,\n * }";
 
         $this->assertStringContainsString($expected, ArrayShapeGenerator::generate($root));
     }
@@ -92,7 +92,7 @@ class ArrayShapeGeneratorTest extends TestCase
         $root = new ArrayNode('root');
         $root->addChild($prototype);
 
-        $expected = "array{\n *     proto?: array<string, string|Param>,\n * }";
+        $expected = "array{\n *     proto?: array<string, string|\Symfony\Component\Config\Loader\ParamConfigurator>,\n * }";
 
         $this->assertStringContainsString($expected, ArrayShapeGenerator::generate($root));
     }
@@ -120,7 +120,7 @@ class ArrayShapeGeneratorTest extends TestCase
         $root = new ArrayNode('root');
         $root->addChild($child);
 
-        $this->assertStringContainsString('node?: bool|Param, // Deprecated: The "node" option is deprecated. // This is a boolean node. // Default: true', ArrayShapeGenerator::generate($root));
+        $this->assertStringContainsString('node?: bool|\Symfony\Component\Config\Loader\ParamConfigurator, // Deprecated: The "node" option is deprecated. // This is a boolean node. // Default: true', ArrayShapeGenerator::generate($root));
     }
 
     public function testPhpDocHandleMultilineDoc()
@@ -133,7 +133,7 @@ class ArrayShapeGeneratorTest extends TestCase
         $root = new ArrayNode('root');
         $root->addChild($child);
 
-        $this->assertStringContainsString('node?: bool|Param, // Deprecated: The "node" option is deprecated. // This is a boolean node. Set to true to enable it. Set to false to disable it. // Default: true', ArrayShapeGenerator::generate($root));
+        $this->assertStringContainsString('node?: bool|\Symfony\Component\Config\Loader\ParamConfigurator, // Deprecated: The "node" option is deprecated. // This is a boolean node. Set to true to enable it. Set to false to disable it. // Default: true', ArrayShapeGenerator::generate($root));
     }
 
     public function testPhpDocShapeSingleLevel()
@@ -159,7 +159,7 @@ class ArrayShapeGeneratorTest extends TestCase
 
         $this->assertSame(<<<'CODE'
             bool|array{
-             *     enabled?: bool|Param, // Default: false
+             *     enabled?: bool|\Symfony\Component\Config\Loader\ParamConfigurator, // Default: false
              * }
             CODE, ArrayShapeGenerator::generate($root->getNode()));
     }
@@ -171,7 +171,7 @@ class ArrayShapeGeneratorTest extends TestCase
 
         $this->assertSame(<<<'CODE'
             bool|array{
-             *     enabled?: bool|Param, // Default: true
+             *     enabled?: bool|\Symfony\Component\Config\Loader\ParamConfigurator, // Default: true
              * }
             CODE, ArrayShapeGenerator::generate($root->getNode()));
     }
