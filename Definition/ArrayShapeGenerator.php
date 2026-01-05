@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\Config\Definition;
 
+use Symfony\Component\Config\Loader\ParamConfigurator;
+
 /**
  * @author Alexandre Daubois <alex.daubois@gmail.com>
  */
@@ -32,11 +34,16 @@ final class ArrayShapeGenerator
                 $node instanceof ScalarNode => 'scalar|null',
                 default => 'mixed',
             };
-            if ('mixed' !== $typeString) {
-                $typeString .= '|Param';
+
+            if ('mixed' === $typeString) {
+                return $typeString;
             }
 
-            return $typeString;
+            if (str_ends_with($typeString, '|null')) {
+                return substr_replace($typeString, '|\\'.ParamConfigurator::class, -5, 0);
+            }
+
+            return $typeString.'|\\'.ParamConfigurator::class;
         }
 
         if ($node instanceof PrototypedArrayNode) {
