@@ -349,6 +349,58 @@ class ArrayNodeDefinitionTest extends TestCase
         ];
     }
 
+    #[DataProvider('provideEnabledStateAfterMerging')]
+    public function testEnabledStateIsPreservedAcrossMergedConfigs(array $firstConfig, array $expected, callable $nodeFactory)
+    {
+        $processor = new Processor();
+        $node = $nodeFactory();
+
+        $this->assertSame(
+            $expected,
+            $processor->process($node->getNode(), [
+                $firstConfig,
+                ['foo' => 'baz'],
+            ])
+        );
+    }
+
+    public static function provideEnabledStateAfterMerging(): array
+    {
+        $factory = static function (callable $builder) {
+            $node = new ArrayNodeDefinition('root');
+            $builder($node)
+                ->children()
+                    ->scalarNode('foo')->defaultValue('bar')->end()
+                ->end()
+            ;
+
+            return $node;
+        };
+
+        return [
+            'canBeEnabled keeps explicit false' => [
+                ['enabled' => false],
+                ['enabled' => false, 'foo' => 'baz'],
+                static fn () => $factory(static fn ($node) => $node->canBeEnabled()),
+            ],
+            'canBeEnabled keeps explicit true' => [
+                ['enabled' => true],
+                ['enabled' => true, 'foo' => 'baz'],
+                static fn () => $factory(static fn ($node) => $node->canBeEnabled()),
+            ],
+            'canBeDisabled keeps explicit false' => [
+                ['enabled' => false],
+                ['enabled' => false, 'foo' => 'baz'],
+                static fn () => $factory(static fn ($node) => $node->canBeDisabled()),
+            ],
+            'canBeDisabled keeps explicit true' => [
+                ['enabled' => true],
+                ['enabled' => true, 'foo' => 'baz'],
+                static fn () => $factory(static fn ($node) => $node->canBeDisabled()),
+            ],
+        ];
+    }
+
     public function testRequiresAtLeastOneElement()
     {
         $node = new ArrayNodeDefinition('root');
