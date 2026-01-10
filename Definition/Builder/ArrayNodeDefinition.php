@@ -348,18 +348,11 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
     public function canBeEnabled(?string $info = null): static
     {
         $disabledNode = $this
+            ->attribute('auto_enable', true)
             ->addDefaultsIfNotSet()
             ->treatFalseLike(['enabled' => false])
             ->treatTrueLike(['enabled' => true])
             ->treatNullLike(['enabled' => true])
-            ->beforeNormalization()
-                ->ifArray()
-                ->then(static function ($v) {
-                    $v['enabled'] ??= true;
-
-                    return $v;
-                })
-            ->end()
             ->children()
                 ->booleanNode('enabled')
                     ->defaultFalse()
@@ -384,18 +377,11 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
     public function canBeDisabled(?string $info = null): static
     {
         $enabledNode = $this
+            ->attribute('auto_enable', true)
             ->addDefaultsIfNotSet()
             ->treatFalseLike(['enabled' => false])
             ->treatTrueLike(['enabled' => true])
             ->treatNullLike(['enabled' => true])
-            ->beforeNormalization()
-                ->ifArray()
-                ->then(static function ($v) {
-                    $v['enabled'] ??= true;
-
-                    return $v;
-                })
-            ->end()
             ->children()
                 ->booleanNode('enabled')
                     ->defaultTrue()
@@ -532,17 +518,23 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
             $node->setDeprecated($this->deprecation['package'], $this->deprecation['version'], $this->deprecation['message']);
         }
 
+        $normalizedTypes = $this->allowedTypes ?? [];
+
         if (isset($this->normalization)) {
-            $allowedTypes = $this->allowedTypes ?? $this->normalization->declaredTypes;
-            foreach ([$this->trueEquivalent, $this->falseEquivalent] as $equivalent) {
-                if (\is_array($equivalent) && $equivalent) {
-                    $allowedTypes[] = ExprBuilder::TYPE_BOOL;
-                }
-            }
+            $normalizedTypes = $normalizedTypes ?: $this->normalization->declaredTypes;
             $node->setNormalizationClosures($this->normalization->before);
-            $node->setNormalizedTypes($allowedTypes ?: [ExprBuilder::TYPE_ARRAY]);
             $node->setXmlRemappings($this->normalization->remappings);
         }
+
+        $normalizedTypes[] = ExprBuilder::TYPE_ARRAY;
+
+        foreach ([$this->trueEquivalent, $this->falseEquivalent] as $equivalent) {
+            if (\is_array($equivalent) && $equivalent) {
+                $normalizedTypes[] = ExprBuilder::TYPE_BOOL;
+            }
+        }
+
+        $node->setNormalizedTypes(array_values(array_unique($normalizedTypes)));
 
         if (isset($this->merge)) {
             $node->setAllowOverwrite($this->merge->allowOverwrite);
