@@ -309,7 +309,9 @@ abstract class BaseNode implements NodeInterface
 
     final public function merge(mixed $leftSide, mixed $rightSide): mixed
     {
-        if (!$this->allowOverwrite) {
+        // Only enforce cannotBeOverwritten when there's actually something to overwrite.
+        // When leftSide is empty (initial population), this check doesn't apply.
+        if (!$this->allowOverwrite && [] !== $leftSide) {
             throw new ForbiddenOverwriteException(\sprintf('Configuration path "%s" cannot be overwritten. You have to define all options for this path, and any of its sub-paths in one configuration section.', $this->getPath()));
         }
 
