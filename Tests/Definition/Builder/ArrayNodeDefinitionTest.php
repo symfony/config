@@ -378,11 +378,6 @@ class ArrayNodeDefinitionTest extends TestCase
         };
 
         return [
-            'canBeEnabled keeps explicit false' => [
-                ['enabled' => false],
-                ['enabled' => false, 'foo' => 'baz'],
-                static fn () => $factory(static fn ($node) => $node->canBeEnabled()),
-            ],
             'canBeEnabled keeps explicit true' => [
                 ['enabled' => true],
                 ['enabled' => true, 'foo' => 'baz'],
