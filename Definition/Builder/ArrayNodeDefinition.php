@@ -353,6 +353,14 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
             ->treatFalseLike(['enabled' => false])
             ->treatTrueLike(['enabled' => true])
             ->treatNullLike(['enabled' => true])
+            ->beforeNormalization()
+                ->ifArray()
+                ->then(static function ($v) {
+                    $v['enabled'] ??= true;
+
+                    return $v;
+                })
+            ->end()
             ->children()
                 ->booleanNode('enabled')
                     ->defaultFalse()
