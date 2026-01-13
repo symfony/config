@@ -20,7 +20,7 @@ class LoaderResolverTest extends TestCase
     public function testConstructor()
     {
         $resolver = new LoaderResolver([
-            $loader = $this->createMock(LoaderInterface::class),
+            $loader = $this->createStub(LoaderInterface::class),
         ]);
 
         $this->assertEquals([$loader], $resolver->getLoaders(), '__construct() takes an array of loaders as its first argument');
@@ -28,7 +28,7 @@ class LoaderResolverTest extends TestCase
 
     public function testResolve()
     {
-        $loader = $this->createMock(LoaderInterface::class);
+        $loader = $this->createStub(LoaderInterface::class);
         $resolver = new LoaderResolver([$loader]);
         $this->assertFalse($resolver->resolve('foo.foo'), '->resolve() returns false if no loader is able to load the resource');
 
@@ -41,7 +41,7 @@ class LoaderResolverTest extends TestCase
     public function testLoaders()
     {
         $resolver = new LoaderResolver();
-        $resolver->addLoader($loader = $this->createMock(LoaderInterface::class));
+        $resolver->addLoader($loader = $this->createStub(LoaderInterface::class));
 
         $this->assertEquals([$loader], $resolver->getLoaders(), 'addLoader() adds a loader');
     }
