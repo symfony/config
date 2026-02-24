@@ -60,7 +60,7 @@ final class ArrayShapeGenerator
         $arrayShape = \sprintf("array{%s\n", self::generateInlinePhpDocForNode($node));
 
         foreach ($children as $child) {
-            $arrayShape .= str_repeat('    ', $nestingLevel).self::dumpNodeKey($child).': ';
+            $arrayShape .= str_repeat('    ', $nestingLevel).self::dumpNodeKey($child, $node).': ';
 
             if ($child instanceof PrototypedArrayNode) {
                 $isHashmap = (bool) $child->getKeyAttribute();
@@ -82,7 +82,7 @@ final class ArrayShapeGenerator
         return implode('|', [...self::getNormalizedTypes($node, ['array', 'any']), $arrayShape]);
     }
 
-    private static function dumpNodeKey(NodeInterface $node): string
+    private static function dumpNodeKey(NodeInterface $node, ?ArrayNode $parent = null): string
     {
         $name = $node->getName();
         $quoted = str_starts_with($name, '@')
@@ -93,7 +93,9 @@ final class ArrayShapeGenerator
             $name = "'".addslashes($name)."'";
         }
 
-        return $name.($node->isRequired() ? '' : '?');
+        $optional = !$node->isRequired() || ($parent instanceof ArrayNode && $parent->shouldPerformDeepMerging());
+
+        return $name.($optional ? '?' : '');
     }
 
     private static function handleNumericNode(NumericNode $node): string
