@@ -105,6 +105,18 @@ class ArrayShapeGeneratorTest extends TestCase
         $root = new ArrayNode('root');
         $root->addChild($child);
 
+        $this->assertStringContainsString('node?: bool', ArrayShapeGenerator::generate($root));
+    }
+
+    public function testPhpDocHandlesRequiredNodeWithNoDeepMerging()
+    {
+        $child = new BooleanNode('node');
+        $child->setRequired(true);
+
+        $root = new ArrayNode('root');
+        $root->setPerformDeepMerging(false);
+        $root->addChild($child);
+
         $expected = 'node: bool';
 
         $this->assertStringContainsString($expected, ArrayShapeGenerator::generate($root));
