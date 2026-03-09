@@ -74,7 +74,7 @@ final class ArrayShapeGenerator
         }
 
         if ($node->shouldIgnoreExtraKeys()) {
-            $arrayShape .= str_repeat('    ', $nestingLevel)."...<mixed>\n";
+            $arrayShape .= str_repeat('    ', $nestingLevel)."...<string, mixed>\n";
         }
 
         $arrayShape = $arrayShape.str_repeat('    ', $nestingLevel - 1).'}';
