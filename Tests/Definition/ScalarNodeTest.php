@@ -59,7 +59,7 @@ class ScalarNodeTest extends TestCase
         $node->addChild($childNode);
 
         $deprecationTriggered = 0;
-        $deprecationHandler = function ($level, $message, $file, $line) use (&$prevErrorHandler, &$deprecationTriggered) {
+        $deprecationHandler = static function ($level, $message, $file, $line) use (&$prevErrorHandler, &$deprecationTriggered) {
             if (\E_USER_DEPRECATED === $level) {
                 return ++$deprecationTriggered;
             }
