@@ -248,7 +248,7 @@ class ArrayNodeDefinition extends NodeDefinition implements ParentNodeDefinition
             ->treatNullLike(['enabled' => true])
             ->beforeNormalization()
                 ->ifArray()
-                ->then(function (array $v) {
+                ->then(static function (array $v) {
                     $v['enabled'] ??= true;
 
                     return $v;

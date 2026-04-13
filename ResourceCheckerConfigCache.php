@@ -111,7 +111,7 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
      */
     public function write(string $content, ?array $metadata = null)
     {
-        $mode = 0666;
+        $mode = 0o666;
         $umask = umask();
         $filesystem = new Filesystem();
         $filesystem->dumpFile($this->file, $content);
@@ -149,7 +149,7 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
         $content = file_get_contents($file);
         $signalingException = new \UnexpectedValueException();
         $prevUnserializeHandler = ini_set('unserialize_callback_func', self::class.'::handleUnserializeCallback');
-        $prevErrorHandler = set_error_handler(function ($type, $msg, $file, $line, $context = []) use (&$prevErrorHandler, $signalingException) {
+        $prevErrorHandler = set_error_handler(static function ($type, $msg, $file, $line, $context = []) use (&$prevErrorHandler, $signalingException) {
             if (__FILE__ === $file && !\in_array($type, [\E_DEPRECATED, \E_USER_DEPRECATED], true)) {
                 throw $signalingException;
             }
