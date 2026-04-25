@@ -14,6 +14,7 @@ namespace Symfony\Component\Config\Tests\Definition;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 use Symfony\Component\Config\Definition\FloatNode;
+use Symfony\Component\Config\Definition\NumericNode;
 
 class FloatNodeTest extends TestCase
 {
@@ -75,5 +76,17 @@ class FloatNodeTest extends TestCase
             [['foo' => 'bar']],
             [new \stdClass()],
         ];
+    }
+
+    public function testFinalizeAcceptsEnvPlaceholderBelowMin()
+    {
+        $node = new FloatNode('multiplier', null, 1);
+        NumericNode::setPlaceholder('env_FOO', ['float' => 0.0]);
+
+        try {
+            $this->assertSame('env_FOO', $node->finalize('env_FOO'));
+        } finally {
+            NumericNode::resetPlaceholders();
+        }
     }
 }

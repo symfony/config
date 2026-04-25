@@ -14,6 +14,7 @@ namespace Symfony\Component\Config\Tests\Definition;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 use Symfony\Component\Config\Definition\IntegerNode;
+use Symfony\Component\Config\Definition\NumericNode;
 
 class IntegerNodeTest extends TestCase
 {
@@ -72,5 +73,17 @@ class IntegerNodeTest extends TestCase
             [['foo' => 'bar']],
             [new \stdClass()],
         ];
+    }
+
+    public function testFinalizeAcceptsEnvPlaceholderBelowMin()
+    {
+        $node = new IntegerNode('max_retries', null, 1);
+        NumericNode::setPlaceholder('env_BAR', ['int' => 0]);
+
+        try {
+            $this->assertSame('env_BAR', $node->finalize('env_BAR'));
+        } finally {
+            NumericNode::resetPlaceholders();
+        }
     }
 }
