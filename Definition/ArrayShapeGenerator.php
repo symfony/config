@@ -62,13 +62,7 @@ final class ArrayShapeGenerator
         foreach ($children as $child) {
             $arrayShape .= str_repeat('    ', $nestingLevel).self::dumpNodeKey($child, $node).': ';
 
-            if ($child instanceof PrototypedArrayNode) {
-                $isHashmap = (bool) $child->getKeyAttribute();
-                $childArrayType = ($isHashmap ? 'array<string, ' : 'list<').self::doGeneratePhpDoc($child->getPrototype(), 1 + $nestingLevel).'>';
-                $arrayShape .= $child->hasDefaultValue() && null === $child->getDefaultValue() ? $childArrayType.'|null' : $childArrayType;
-            } else {
-                $arrayShape .= self::doGeneratePhpDoc($child, 1 + $nestingLevel);
-            }
+            $arrayShape .= self::doGeneratePhpDoc($child, 1 + $nestingLevel);
 
             $arrayShape .= \sprintf(",%s\n", !$child instanceof ArrayNode ? self::generateInlinePhpDocForNode($child) : '');
         }
