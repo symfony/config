@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Config\Definition;
 
+use Symfony\Component\Config\Definition\Builder\ExprBuilder;
 use Symfony\Component\Config\Loader\ParamConfigurator;
 
 /**
@@ -48,7 +49,7 @@ final class ArrayShapeGenerator
 
         if ($node instanceof PrototypedArrayNode) {
             $isHashmap = (bool) $node->getKeyAttribute();
-            $arrayShape = ($isHashmap ? 'array<string, ' : 'list<').self::doGeneratePhpDoc($node->getPrototype(), 1 + $nestingLevel).'>';
+            $arrayShape = ($isHashmap ? 'array<string, ' : 'list<').self::doGeneratePhpDoc($node->getPrototype(), $nestingLevel).'>';
 
             return implode('|', [...self::getNormalizedTypes($node, ['array', 'any']), $arrayShape]);
         }
@@ -138,6 +139,9 @@ final class ArrayShapeGenerator
         }
 
         $types = array_unique($types);
+        if (false !== $backedEnumIndex = array_search(ExprBuilder::TYPE_BACKED_ENUM, $types, true)) {
+            $types[$backedEnumIndex] = '\BackedEnum';
+        }
 
         sort($types);
 

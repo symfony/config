@@ -102,13 +102,31 @@ class ArrayShapeGeneratorTest extends TestCase
         $proto = new ArrayNodeDefinition('proto');
         $proto
             ->useAttributeAsKey('name')
-            ->acceptAndWrap(['string'])
+            ->acceptAndWrap(['string', 'backed-enum'])
             ->prototype('scalar')->end();
 
         $root = new ArrayNodeDefinition('root');
         $root->append($proto);
 
-        $expected = "array{\n *     proto?: string|array<string, scalar|\Symfony\Component\Config\Loader\ParamConfigurator|null>,\n * }";
+        $expected = "array{\n *     proto?: \BackedEnum|string|array<string, scalar|\Symfony\Component\Config\Loader\ParamConfigurator|null>,\n * }";
+
+        $this->assertStringContainsString($expected, ArrayShapeGenerator::generate($root->getNode()));
+    }
+
+    public function testArrayPrototypePhpDoc()
+    {
+        $proto = new ArrayNodeDefinition('proto');
+        $proto
+            ->arrayPrototype()
+                ->children()
+                    ->booleanNode('nested')->end()
+                ->end()
+            ->end();
+
+        $root = new ArrayNodeDefinition('root');
+        $root->append($proto);
+
+        $expected = "array{\n *     proto?: list<array{ // Default: []\n *         nested?: bool|\Symfony\Component\Config\Loader\ParamConfigurator,\n *     }>,\n * }";
 
         $this->assertStringContainsString($expected, ArrayShapeGenerator::generate($root->getNode()));
     }
