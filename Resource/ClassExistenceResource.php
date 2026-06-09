@@ -115,6 +115,12 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
 
     public function __unserialize(array $data): void
     {
+        foreach ($data as $value) {
+            if ($value instanceof \Stringable) {
+                throw new \BadMethodCallException('Cannot unserialize '.self::class);
+            }
+        }
+
         $this->resource = array_shift($data);
         $this->exists = array_shift($data);
 
