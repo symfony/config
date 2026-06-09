@@ -93,6 +93,12 @@ class GlobResource implements \IteratorAggregate, SelfCheckingResourceInterface
 
     public function __unserialize(array $data): void
     {
+        foreach ($data as $value) {
+            if ($value instanceof \Stringable) {
+                throw new \BadMethodCallException('Cannot unserialize '.self::class);
+            }
+        }
+
         $this->prefix = array_shift($data);
         $this->pattern = array_shift($data);
         $this->recursive = array_shift($data);
